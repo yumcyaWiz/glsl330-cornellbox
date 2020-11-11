@@ -42,9 +42,15 @@ int main() {
     }
   });
 
+  glViewport(0, 0, 512, 512);
+
   // main app loop
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
+
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glfwSwapBuffers(window);
   }
 
   // exit

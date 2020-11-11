@@ -22,9 +22,9 @@ class Shader {
       : vertex_shader_filepath(_vertex_shader_filepath),
         fragment_shader_filepath(_fragment_shader_filepath) {}
 
-  void compileShader() const {
+  void compileShader() {
     // compile vertex shader
-    GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     const char* vertex_shader_source =
         fileToString(vertex_shader_filepath).c_str();
     glShaderSource(vertex_shader, 1, &vertex_shader_source, nullptr);
@@ -48,7 +48,7 @@ class Shader {
     }
 
     // compile fragment shader
-    GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
     const char* fragment_shader_source =
         fileToString(fragment_shader_filepath).c_str();
     glShaderSource(fragment_shader, 1, &fragment_shader_source, nullptr);
@@ -72,9 +72,20 @@ class Shader {
     }
   }
 
+  void linkProgram() const {
+    GLuint program = glCreateProgram();
+    glAttachShader(program, vertex_shader);
+    glAttachShader(program, fragment_shader);
+    glLinkProgram(program);
+    glDetachShader(program, vertex_shader);
+    glDetachShader(program, fragment_shader);
+  }
+
  private:
   const std::string vertex_shader_filepath;
   const std::string fragment_shader_filepath;
+  GLuint vertex_shader;
+  GLuint fragment_shader;
 };
 
 #endif

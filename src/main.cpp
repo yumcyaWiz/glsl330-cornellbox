@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "glad/glad.h"
+//
 #include "GLFW/glfw3.h"
 
 int main() {
@@ -12,7 +14,7 @@ int main() {
   });
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   GLFWwindow* window =
       glfwCreateWindow(512, 512, "GLSL CornellBox", nullptr, nullptr);
   if (!window) {

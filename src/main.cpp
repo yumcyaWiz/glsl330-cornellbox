@@ -19,6 +19,7 @@ int main() {
   // setup window and context
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   GLFWwindow* window =
       glfwCreateWindow(512, 512, "GLSL CornellBox", nullptr, nullptr);
   if (!window) {

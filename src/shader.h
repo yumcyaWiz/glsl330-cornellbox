@@ -9,6 +9,12 @@
 
 const std::string fileToString(const std::string& filename) {
   std::ifstream file(filename);
+  if (!file) {
+    std::cerr << "failed to open " << filename << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
+  // convert file content to string
   std::stringstream ss;
   ss << file.rdbuf();
   file.close();

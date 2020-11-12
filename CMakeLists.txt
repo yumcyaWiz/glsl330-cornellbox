@@ -20,5 +20,8 @@ target_link_libraries(main glad)
 # GLFW
 target_link_libraries(main glfw)
 
+# glm
+target_link_libraries(main glm)
+
 # copy shaders to build
 add_custom_command(TARGET main POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/src/shaders $<TARGET_FILE_DIR:main>/shaders COMMENT "copying shaders" VERBATIM)

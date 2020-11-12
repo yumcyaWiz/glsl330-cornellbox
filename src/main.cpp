@@ -7,8 +7,8 @@
 #include "shader.h"
 
 int main() {
-  const std::string vertex_shader_filepath = "pt.vert";
-  const std::string fragment_shader_filepath = "pt.frag";
+  const std::string vertex_shader_filepath = "./shaders/pt.vert";
+  const std::string fragment_shader_filepath = "./shaders/pt.frag";
 
   // init glfw
   if (!glfwInit()) {
@@ -57,6 +57,12 @@ int main() {
   glGenBuffers(1, &VBO);
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+  // setup shaders
+  Shader shader(vertex_shader_filepath, fragment_shader_filepath);
+  shader.compileShader();
+  shader.linkShader();
+  shader.useShader();
 
   // main app loop
   while (!glfwWindowShouldClose(window)) {

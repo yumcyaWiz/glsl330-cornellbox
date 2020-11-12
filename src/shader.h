@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <variant>
 
 #include "glad/glad.h"
 
@@ -106,6 +107,26 @@ class Shader {
   }
 
   void useShader() const { glUseProgram(program); }
+
+  void updateUniform(const std::string& uniform_name, const std::variant<GLint ,GLfloat>& v) {
+    GLint location =
+        glGetUniformLocation(program, uniform_name.c_str());
+
+    struct Visitor {
+      Visitor(GLint _location) : location(_location) {}
+
+      void operator()(GLint value) {
+        glUniform1i(location, value);
+      }
+      void operator()(GLfloat value) {
+        glUniform1f(location, value);
+      }
+
+      GLint location;
+    };
+
+    std::visit(Visitor{location}, v);
+  }
 
  private:
   const std::string vertex_shader_filepath;

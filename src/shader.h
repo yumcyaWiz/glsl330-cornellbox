@@ -31,9 +31,9 @@ class Shader {
   void compileShader() {
     // compile vertex shader
     vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    const char* vertex_shader_source =
-        fileToString(vertex_shader_filepath).c_str();
-    glShaderSource(vertex_shader, 1, &vertex_shader_source, nullptr);
+    vertex_shader_source = fileToString(vertex_shader_filepath);
+    const char* vertex_shader_source_c_str = vertex_shader_source.c_str();
+    glShaderSource(vertex_shader, 1, &vertex_shader_source_c_str, nullptr);
     glCompileShader(vertex_shader);
 
     // handle compilation error
@@ -55,9 +55,9 @@ class Shader {
 
     // compile fragment shader
     fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    const char* fragment_shader_source =
-        fileToString(fragment_shader_filepath).c_str();
-    glShaderSource(fragment_shader, 1, &fragment_shader_source, nullptr);
+    fragment_shader_source = fileToString(fragment_shader_filepath);
+    const char* fragment_shader_source_c_str = fragment_shader_source.c_str();
+    glShaderSource(fragment_shader, 1, &fragment_shader_source_c_str, nullptr);
     glCompileShader(fragment_shader);
 
     // handle compilation error
@@ -109,7 +109,9 @@ class Shader {
 
  private:
   const std::string vertex_shader_filepath;
+  std::string vertex_shader_source;
   const std::string fragment_shader_filepath;
+  std::string fragment_shader_source;
   GLuint vertex_shader;
   GLuint fragment_shader;
   GLuint program;

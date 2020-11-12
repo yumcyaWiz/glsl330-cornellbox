@@ -8,7 +8,6 @@
 uniform int samples;
 uniform float time;
 uniform vec2 resolution;
-uniform sampler2D frameTexture;
 
 float atan2(float y, float x) {
     return x == 0.0 ? sign(y) * PI / 2.0 : atan(y, x);
@@ -411,7 +410,6 @@ vec3 computeRadiance(Ray ray_in) {
 }
 
 void main() {
-    /*
     setSeed();
 
     vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) / resolution;
@@ -420,6 +418,4 @@ void main() {
 
     vec3 radiance = computeRadiance(ray);
     gl_FragColor = vec4(radiance, 1.0);
-    */
-    gl_FragColor = vec4(sin(time) * vec3(gl_FragCoord.xy / resolution, 1.0), 1.0);
 }

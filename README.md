@@ -2,6 +2,12 @@
 
 Render Cornell Box with Path Tracing in GLSL.
 
+## Requirements
+
+* C++17
+* OpenGL 3.3
+* CMake 3.12 or Higher
+
 ## Setup
 
 ```sh

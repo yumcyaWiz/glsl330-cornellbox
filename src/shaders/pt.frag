@@ -421,5 +421,5 @@ void main() {
     vec3 radiance = computeRadiance(ray);
     gl_FragColor = vec4(radiance, 1.0);
     */
-    gl_FragColor = vec4(vec3(gl_FragCoord.xy / resolution, 1.0), 1.0);
+    gl_FragColor = vec4(sin(time) * vec3(gl_FragCoord.xy / resolution, 1.0), 1.0);
 }

@@ -94,6 +94,7 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     // set uniforms
+    shader.setUniform("time", static_cast<float>(glfwGetTime()));
     shader.setUniform("samples", samples);
     shader.setUniform("resolution", resolution);
 

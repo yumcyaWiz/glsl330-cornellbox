@@ -84,16 +84,23 @@ int main() {
   shader.useShader();
 
   // main app loop
+  int samples = 0;
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 
     glClear(GL_COLOR_BUFFER_BIT);
+
+    // set uniforms
+    shader.setUniform("samples", samples);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
     glfwSwapBuffers(window);
+    
+    // update uniforms
+    samples++;
   }
 
   // exit

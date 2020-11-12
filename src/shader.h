@@ -108,17 +108,17 @@ class Shader {
 
   void useShader() const { glUseProgram(program); }
 
-  void updateUniform(const std::string& uniform_name, const std::variant<GLint ,GLfloat>& v) {
+  void setUniform(const std::string& uniform_name, const std::variant<int ,float>& v) {
     GLint location =
         glGetUniformLocation(program, uniform_name.c_str());
 
     struct Visitor {
       Visitor(GLint _location) : location(_location) {}
 
-      void operator()(GLint value) {
+      void operator()(int value) {
         glUniform1i(location, value);
       }
-      void operator()(GLfloat value) {
+      void operator()(float value) {
         glUniform1f(location, value);
       }
 

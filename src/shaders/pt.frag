@@ -411,6 +411,7 @@ vec3 computeRadiance(Ray ray_in) {
 }
 
 void main() {
+    /*
     setSeed();
 
     vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) / resolution;
@@ -419,4 +420,6 @@ void main() {
 
     vec3 radiance = computeRadiance(ray);
     gl_FragColor = vec4(radiance, 1.0);
+    */
+    gl_FragColor = vec4(vec3(float(samples) / 100.0), 1.0);
 }

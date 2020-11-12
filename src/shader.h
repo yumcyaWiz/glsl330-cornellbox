@@ -7,6 +7,8 @@
 #include <variant>
 
 #include "glad/glad.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 const std::string fileToString(const std::string& filename) {
   std::ifstream file(filename);
@@ -108,7 +110,7 @@ class Shader {
 
   void useShader() const { glUseProgram(program); }
 
-  void setUniform(const std::string& uniform_name, const std::variant<int ,float>& v) {
+  void setUniform(const std::string& uniform_name, const std::variant<int ,float, glm::vec2>& v) {
     GLint location =
         glGetUniformLocation(program, uniform_name.c_str());
 
@@ -120,6 +122,9 @@ class Shader {
       }
       void operator()(float value) {
         glUniform1f(location, value);
+      }
+      void operator()(const glm::vec2& value) {
+        glUniform2fv(location, 1, glm::value_ptr(value));
       }
 
       GLint location;

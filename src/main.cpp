@@ -4,7 +4,7 @@
 //
 #include "GLFW/glfw3.h"
 //
-#include "glm/vec2.hpp"
+#include "glm/glm.hpp"
 //
 #include "shader.h"
 
@@ -87,6 +87,7 @@ int main() {
 
   // main app loop
   int samples = 0;
+  const glm::vec2 resolution = glm::vec2(512, 512);
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 
@@ -94,6 +95,7 @@ int main() {
 
     // set uniforms
     shader.setUniform("samples", samples);
+    shader.setUniform("resolution", resolution);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

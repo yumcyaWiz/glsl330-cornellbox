@@ -34,13 +34,6 @@ int main() {
   glfwMakeContextCurrent(window);
   glfwSwapInterval(1);
 
-  // load and compile shader
-  GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-  const char* vertex_shader_source =
-      fileToString(vertex_shader_filepath).c_str();
-  glShaderSource(vertex_shader, 1, &vertex_shader_source, nullptr);
-  glCompileShader(vertex_shader);
-
   // initialize glad
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cerr << "failed to initialize glad" << std::endl;

@@ -72,8 +72,9 @@ class Shader {
     }
   }
 
-  void linkProgram() const {
-    GLuint program = glCreateProgram();
+  void linkProgram() {
+    // Link Shader Program
+    program = glCreateProgram();
     glAttachShader(program, vertex_shader);
     glAttachShader(program, fragment_shader);
     glLinkProgram(program);
@@ -81,11 +82,14 @@ class Shader {
     glDetachShader(program, fragment_shader);
   }
 
+  void useProgram() const { glUseProgram(program); }
+
  private:
   const std::string vertex_shader_filepath;
   const std::string fragment_shader_filepath;
   GLuint vertex_shader;
   GLuint fragment_shader;
+  GLuint program;
 };
 
 #endif

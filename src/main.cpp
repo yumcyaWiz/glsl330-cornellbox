@@ -50,6 +50,14 @@ int main() {
 
   glViewport(0, 0, 512, 512);
 
+  // setup VBO;
+  GLfloat vertices[] = {1.0f,  -1.0f, 0.0f, -1.0f, -1.0f, 0.0f,
+                        -1.0f, 1.0f,  0.0f, 1.0f,  1.0f,  0.0f};
+  GLuint VBO;
+  glGenBuffers(1, &VBO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
   // main app loop
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();

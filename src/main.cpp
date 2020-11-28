@@ -50,8 +50,6 @@ int main() {
     }
   });
 
-  glViewport(0, 0, 512, 512);
-
   // setup VAO
   GLuint VAO;
   glGenVertexArrays(1, &VAO);
@@ -79,6 +77,36 @@ int main() {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
                         (GLvoid*)0);
 
+  // setup accumulate FBO
+  GLuint accumFBO;
+  glGenFramebuffers(1, &accumFBO);
+  glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
+  // setup texture
+  GLuint accumTexture;
+  glGenTextures(1, &accumTexture);
+  glBindTexture(GL_TEXTURE_2D, accumTexture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 512, 512, 0, GL_RGBA, GL_FLOAT, 0);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                         accumTexture, 0);
+
+  // setup output FBO
+  GLuint outputFBO;
+  glGenFramebuffers(1, &outputFBO);
+  glBindFramebuffer(GL_FRAMEBUFFER, outputFBO);
+  // setup texture
+  GLuint outputTexture;
+  glGenTextures(1, &outputTexture);
+  glBindTexture(GL_TEXTURE_2D, outputTexture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 512, 512, 0, GL_RGBA, GL_FLOAT, 0);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                         outputTexture, 0);
+
   // setup shaders
   Shader shader(vertex_shader_filepath, fragment_shader_filepath);
   shader.compileShader();
@@ -93,17 +121,22 @@ int main() {
 
     glClear(GL_COLOR_BUFFER_BIT);
 
+    glViewport(0, 0, 512, 512);
+
     // set uniforms
     shader.setUniform("time", static_cast<float>(glfwGetTime()));
     shader.setUniform("samples", samples);
     shader.setUniform("resolution", resolution);
 
+    glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
+
+    // draw
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
     glfwSwapBuffers(window);
-    
+
     // update uniforms
     samples++;
   }

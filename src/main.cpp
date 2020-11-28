@@ -8,10 +8,30 @@
 //
 #include "shader.h"
 
-int main() {
-  const int width = 1024;
-  const int height = 1024;
+const int width = 1024;
+const int height = 1024;
+int samples = 0;
 
+GLuint accumFBO;
+GLuint accumTexture;
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action,
+                 int mods) {
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+  } else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+    // clear accumTexture
+    glBindTexture(GL_TEXTURE_2D, accumTexture);
+    std::vector<GLfloat> data(4 * width * height);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_FLOAT,
+                    data.data());
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    samples = 0;
+  }
+}
+
+int main() {
   // init glfw
   if (!glfwInit()) {
     std::cerr << "failed to initialize GLFW" << std::endl;
@@ -36,19 +56,14 @@ int main() {
   glfwMakeContextCurrent(window);
   glfwSwapInterval(1);
 
+  // set glfw key callback
+  glfwSetKeyCallback(window, keyCallback);
+
   // initialize glad
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cerr << "failed to initialize glad" << std::endl;
     std::exit(EXIT_FAILURE);
   }
-
-  // set glfw key callback
-  glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode,
-                                int action, int mods) {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-      glfwSetWindowShouldClose(window, GLFW_TRUE);
-    }
-  });
 
   // setup VAO
   GLuint VAO;
@@ -78,11 +93,9 @@ int main() {
                         (GLvoid*)0);
 
   // setup accumulate FBO
-  GLuint accumFBO;
   glGenFramebuffers(1, &accumFBO);
   glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
   // setup texture
-  GLuint accumTexture;
   glGenTextures(1, &accumTexture);
   glBindTexture(GL_TEXTURE_2D, accumTexture);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
@@ -103,7 +116,6 @@ int main() {
   output_shader.linkShader();
 
   // main app loop
-  int samples = 0;
   const glm::vec2 resolution = glm::vec2(width, height);
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();

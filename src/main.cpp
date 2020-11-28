@@ -9,6 +9,9 @@
 #include "shader.h"
 
 int main() {
+  const int width = 1024;
+  const int height = 1024;
+
   // init glfw
   if (!glfwInit()) {
     std::cerr << "failed to initialize GLFW" << std::endl;
@@ -25,7 +28,7 @@ int main() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   GLFWwindow* window =
-      glfwCreateWindow(512, 512, "GLSL CornellBox", nullptr, nullptr);
+      glfwCreateWindow(width, height, "GLSL CornellBox", nullptr, nullptr);
   if (!window) {
     std::cerr << "failed to create window" << std::endl;
     std::exit(EXIT_FAILURE);
@@ -82,7 +85,8 @@ int main() {
   GLuint accumTexture;
   glGenTextures(1, &accumTexture);
   glBindTexture(GL_TEXTURE_2D, accumTexture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 512, 512, 0, GL_RGBA, GL_FLOAT, 0);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
+               GL_FLOAT, 0);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glBindTexture(GL_TEXTURE_2D, 0);
@@ -100,12 +104,12 @@ int main() {
 
   // main app loop
   int samples = 0;
-  const glm::vec2 resolution = glm::vec2(512, 512);
+  const glm::vec2 resolution = glm::vec2(width, height);
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 
     glClear(GL_COLOR_BUFFER_BIT);
-    glViewport(0, 0, 512, 512);
+    glViewport(0, 0, width, height);
 
     // path tracing
     pt_shader.useShader();

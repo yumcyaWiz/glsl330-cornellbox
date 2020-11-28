@@ -8,6 +8,7 @@
 uniform int samples;
 uniform float time;
 uniform vec2 resolution;
+uniform sampler2D accumTexture;
 
 float atan2(float y, float x) {
     return x == 0.0 ? sign(y) * PI / 2.0 : atan(y, x);
@@ -417,5 +418,5 @@ void main() {
     Ray ray = rayGen(uv);
 
     vec3 radiance = computeRadiance(ray);
-    gl_FragColor = vec4(radiance, 1.0);
+    gl_FragColor = vec4(texture(accumTexture, gl_FragCoord.xy / resolution).xyz + radiance, 1.0);
 }

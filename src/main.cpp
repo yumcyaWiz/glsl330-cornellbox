@@ -112,7 +112,10 @@ int main() {
     pt_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     pt_shader.setUniform("samples", samples);
     pt_shader.setUniform("resolution", resolution);
+    pt_shader.setUniform("accumTexture", 0);
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, accumTexture);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

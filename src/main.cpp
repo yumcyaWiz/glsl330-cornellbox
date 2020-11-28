@@ -89,21 +89,6 @@ int main() {
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                          accumTexture, 0);
 
-  // setup output FBO
-  GLuint outputFBO;
-  glGenFramebuffers(1, &outputFBO);
-  glBindFramebuffer(GL_FRAMEBUFFER, outputFBO);
-  // setup texture
-  GLuint outputTexture;
-  glGenTextures(1, &outputTexture);
-  glBindTexture(GL_TEXTURE_2D, outputTexture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 512, 512, 0, GL_RGBA, GL_FLOAT, 0);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                         outputTexture, 0);
-
   // setup shaders
   Shader pt_shader("./shaders/pt.vert", "./shaders/pt.frag");
   pt_shader.compileShader();
@@ -138,8 +123,9 @@ int main() {
     output_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     output_shader.setUniform("samples", samples);
     output_shader.setUniform("resolution", resolution);
-    output_shader.setUniform("accumTexture", accumTexture);
-    // glBindFramebuffer(GL_FRAMEBUFFER, outputFBO);
+    output_shader.setUniform("accumTexture", 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, accumTexture);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

@@ -131,13 +131,15 @@ int main() {
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // output
     output_shader.useShader();
-    pt_shader.setUniform("time", static_cast<float>(glfwGetTime()));
-    pt_shader.setUniform("samples", samples);
-    pt_shader.setUniform("resolution", resolution);
-    glBindFramebuffer(GL_FRAMEBUFFER, outputFBO);
+    output_shader.setUniform("time", static_cast<float>(glfwGetTime()));
+    output_shader.setUniform("samples", samples);
+    output_shader.setUniform("resolution", resolution);
+    output_shader.setUniform("accumTexture", accumTexture);
+    // glBindFramebuffer(GL_FRAMEBUFFER, outputFBO);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

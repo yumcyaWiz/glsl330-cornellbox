@@ -9,9 +9,6 @@
 #include "shader.h"
 
 int main() {
-  const std::string vertex_shader_filepath = "./shaders/pt.vert";
-  const std::string fragment_shader_filepath = "./shaders/pt.frag";
-
   // init glfw
   if (!glfwInit()) {
     std::cerr << "failed to initialize GLFW" << std::endl;
@@ -108,10 +105,13 @@ int main() {
                          outputTexture, 0);
 
   // setup shaders
-  Shader shader(vertex_shader_filepath, fragment_shader_filepath);
-  shader.compileShader();
-  shader.linkShader();
-  shader.useShader();
+  Shader pt_shader("./shaders/pt.vert", "./shaders/pt.frag");
+  pt_shader.compileShader();
+  pt_shader.linkShader();
+
+  Shader output_shader("./shaders/pt.vert", "./shaders/output.frag");
+  output_shader.compileShader();
+  output_shader.linkShader();
 
   // main app loop
   int samples = 0;
@@ -120,17 +120,24 @@ int main() {
     glfwPollEvents();
 
     glClear(GL_COLOR_BUFFER_BIT);
-
     glViewport(0, 0, 512, 512);
 
-    // set uniforms
-    shader.setUniform("time", static_cast<float>(glfwGetTime()));
-    shader.setUniform("samples", samples);
-    shader.setUniform("resolution", resolution);
-
+    // path tracing
+    pt_shader.useShader();
+    pt_shader.setUniform("time", static_cast<float>(glfwGetTime()));
+    pt_shader.setUniform("samples", samples);
+    pt_shader.setUniform("resolution", resolution);
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 
-    // draw
+    // output
+    output_shader.useShader();
+    pt_shader.setUniform("time", static_cast<float>(glfwGetTime()));
+    pt_shader.setUniform("samples", samples);
+    pt_shader.setUniform("resolution", resolution);
+    glBindFramebuffer(GL_FRAMEBUFFER, outputFBO);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

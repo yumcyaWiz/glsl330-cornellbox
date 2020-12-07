@@ -13,14 +13,6 @@
 const int width = 1024;
 const int height = 1024;
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action,
-                 int mods) {
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-    glfwSetWindowShouldClose(window, GLFW_TRUE);
-  } else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
-  }
-}
-
 int main() {
   // init glfw
   if (!glfwInit()) {
@@ -46,9 +38,6 @@ int main() {
   glfwMakeContextCurrent(window);
   glfwSwapInterval(1);
 
-  // set glfw key callback
-  glfwSetKeyCallback(window, keyCallback);
-
   // initialize glad
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cerr << "failed to initialize glad" << std::endl;
@@ -57,6 +46,16 @@ int main() {
 
   // setup renderer
   Renderer renderer(width, height);
+
+  // set glfw key callback
+  glfwSetKeyCallback(window,
+                     [](GLFWwindow* window, int key, int scancode, int action,
+                        int mods) -> void {
+                       if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+                         glfwSetWindowShouldClose(window, GLFW_TRUE);
+                       } else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+                       }
+                     });
 
   // main app loop
   while (!glfwWindowShouldClose(window)) {

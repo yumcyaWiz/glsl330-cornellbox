@@ -35,6 +35,7 @@ class Shader {
   GLuint program;
 
  public:
+  Shader() {}
   Shader(const std::string& _vertex_shader_filepath,
          const std::string& _fragment_shader_filepath)
       : vertex_shader_filepath(_vertex_shader_filepath),

@@ -11,8 +11,8 @@ class Renderer {
   unsigned int height;
   unsigned int samples;
 
-  GLuint accumFBO;
   GLuint accumTexture;
+  GLuint accumFBO;
 
   Rectangle rectangle;
 
@@ -51,6 +51,8 @@ class Renderer {
   }
 
   void render() {
+    const glm::vec2 resolution = glm::vec2(width, height);
+
     // path tracing
     pt_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     pt_shader.setUniform("samples", samples);
@@ -58,7 +60,6 @@ class Renderer {
     pt_shader.setUniform("accumTexture", 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, accumTexture);
-
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
     rectangle.draw(pt_shader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

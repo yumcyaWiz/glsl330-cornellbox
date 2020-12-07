@@ -100,7 +100,6 @@ int main() {
     glViewport(0, 0, width, height);
 
     // path tracing
-    pt_shader.useShader();
     pt_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     pt_shader.setUniform("samples", samples);
     pt_shader.setUniform("resolution", resolution);
@@ -108,18 +107,17 @@ int main() {
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, accumTexture);
-    rectangle.draw();
+    rectangle.draw(pt_shader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // output
-    output_shader.useShader();
     output_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     output_shader.setUniform("samples", samples);
     output_shader.setUniform("resolution", resolution);
     output_shader.setUniform("accumTexture", 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, accumTexture);
-    rectangle.draw();
+    rectangle.draw(output_shader);
 
     glfwSwapBuffers(window);
 

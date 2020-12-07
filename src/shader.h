@@ -25,6 +25,15 @@ const std::string fileToString(const std::string& filename) {
 }
 
 class Shader {
+ private:
+  const std::string vertex_shader_filepath;
+  std::string vertex_shader_source;
+  const std::string fragment_shader_filepath;
+  std::string fragment_shader_source;
+  GLuint vertex_shader;
+  GLuint fragment_shader;
+  GLuint program;
+
  public:
   Shader(const std::string& _vertex_shader_filepath,
          const std::string& _fragment_shader_filepath)
@@ -108,7 +117,8 @@ class Shader {
     }
   }
 
-  void useShader() const { glUseProgram(program); }
+  void activate() const { glUseProgram(program); }
+  void deactivate() const { glUseProgram(0); }
 
   void setUniform(const std::string& uniform_name,
                   const std::variant<GLint, GLuint, GLfloat, glm::vec2>& v) {
@@ -127,17 +137,10 @@ class Shader {
       GLint location;
     };
 
+    activate();
     std::visit(Visitor{location}, v);
+    deactivate();
   }
-
- private:
-  const std::string vertex_shader_filepath;
-  std::string vertex_shader_source;
-  const std::string fragment_shader_filepath;
-  std::string fragment_shader_source;
-  GLuint vertex_shader;
-  GLuint fragment_shader;
-  GLuint program;
 };
 
 #endif

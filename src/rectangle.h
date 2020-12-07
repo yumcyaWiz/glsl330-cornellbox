@@ -2,6 +2,7 @@
 #define _RECTANGLE_H
 
 #include "glad/glad.h"
+#include "shader.h"
 
 class Rectangle {
  private:
@@ -40,10 +41,12 @@ class Rectangle {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   }
 
-  void draw() const {
+  void draw(const Shader& shader) const {
+    shader.activate();
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+    shader.deactivate();
   }
 };
 

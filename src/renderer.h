@@ -37,8 +37,8 @@ class Renderer {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // setup accumulate FBO
-    glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
     glGenFramebuffers(1, &accumFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                            accumTexture, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -57,25 +57,20 @@ class Renderer {
     pt_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     pt_shader.setUniform("samples", samples);
     pt_shader.setUniform("resolution", resolution);
-    pt_shader.setUniform("accumTexture", 0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, accumTexture);
+    pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
     rectangle.draw(pt_shader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // update samples
+    samples++;
 
     // output
     output_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     output_shader.setUniform("samples", samples);
     output_shader.setUniform("resolution", resolution);
-    output_shader.setUniform("accumTexture", 0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, accumTexture);
-
+    output_shader.setUniformTexture("accumTexture", accumTexture, 0);
     rectangle.draw(output_shader);
-
-    // update samples
-    samples++;
   }
 
   void clear() {

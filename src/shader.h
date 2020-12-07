@@ -121,6 +121,43 @@ class Shader {
   void activate() const { glUseProgram(program); }
   void deactivate() const { glUseProgram(0); }
 
+  void setUniform(const std::string& uniform_name, GLint value) const {
+    activate();
+    const GLint location = glGetUniformLocation(program, uniform_name.c_str());
+    glUniform1i(location, value);
+    deactivate();
+  }
+  void setUniform(const std::string& uniform_name, GLuint value) const {
+    activate();
+    const GLint location = glGetUniformLocation(program, uniform_name.c_str());
+    glUniform1i(location, value);
+    deactivate();
+  }
+  void setUniform(const std::string& uniform_name, GLfloat value) const {
+    activate();
+    const GLint location = glGetUniformLocation(program, uniform_name.c_str());
+    glUniform1f(location, value);
+    deactivate();
+  }
+  void setUniform(const std::string& uniform_name,
+                  const glm::vec2& value) const {
+    activate();
+    const GLint location = glGetUniformLocation(program, uniform_name.c_str());
+    glUniform2fv(location, 1, glm::value_ptr(value));
+    deactivate();
+  }
+
+  void setUniformTexture(const std::string& uniform_name, GLuint texture,
+                         GLuint texture_unit_number) const {
+    activate();
+    const GLint location = glGetUniformLocation(program, uniform_name.c_str());
+    glUniform1i(location, texture_unit_number);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    deactivate();
+  }
+
+  /*
   void setUniform(const std::string& uniform_name,
                   const std::variant<GLint, GLuint, GLfloat, glm::vec2>& v) {
     GLint location = glGetUniformLocation(program, uniform_name.c_str());
@@ -142,6 +179,7 @@ class Shader {
     std::visit(Visitor{location}, v);
     deactivate();
   }
+  */
 };
 
 #endif

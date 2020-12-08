@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 
 #include "glad/glad.h"
 //
@@ -12,6 +13,17 @@
 
 const int width = 1024;
 const int height = 1024;
+
+std::unique_ptr<Renderer> renderer;
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action,
+                 int mods) {
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+  } else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+    renderer->clear();
+  }
+}
 
 int main() {
   // init glfw
@@ -44,18 +56,11 @@ int main() {
     std::exit(EXIT_FAILURE);
   }
 
-  // setup renderer
-  Renderer renderer(width, height);
-
   // set glfw key callback
-  glfwSetKeyCallback(window,
-                     [](GLFWwindow* window, int key, int scancode, int action,
-                        int mods) -> void {
-                       if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-                         glfwSetWindowShouldClose(window, GLFW_TRUE);
-                       } else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
-                       }
-                     });
+  glfwSetKeyCallback(window, keyCallback);
+
+  // setup renderer
+  renderer = std::make_unique<Renderer>(width, height);
 
   // main app loop
   while (!glfwWindowShouldClose(window)) {
@@ -64,7 +69,7 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT);
     glViewport(0, 0, width, height);
 
-    renderer.render();
+    renderer->render();
 
     glfwSwapBuffers(window);
   }

@@ -12,6 +12,7 @@ class Renderer {
   unsigned int samples;
 
   GLuint accumTexture;
+  GLuint stateTexture;
   GLuint accumFBO;
 
   Rectangle rectangle;
@@ -36,11 +37,24 @@ class Renderer {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    // setup RNG state texture
+    glGenTextures(1, &stateTexture);
+    glBindTexture(GL_TEXTURE_2D, stateTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER,
+                 GL_UNSIGNED_INT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     // setup accumulate FBO
     glGenFramebuffers(1, &accumFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                            accumTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D,
+                           stateTexture, 0);
+    GLuint attachments[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+    glDrawBuffers(2, attachments);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // compile shaders

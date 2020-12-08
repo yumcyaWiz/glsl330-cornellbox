@@ -9,6 +9,7 @@ uniform int samples;
 uniform float time;
 uniform vec2 resolution;
 uniform sampler2D accumTexture;
+uniform sampler2D stateTexture;
 
 layout (location = 0) out vec4 color;
 layout (location = 1) out uint state;
@@ -349,8 +350,9 @@ uint hash( uint x ) {
     return x;
 }
 
-void setSeed() {
+void setSeed(vec2 uv) {
     RNG_STATE.a = hash(uint(gl_FragCoord.x + resolution.x * gl_FragCoord.y)) + hash(uint(samples));
+    // RNG_STATE.a = texture(stateTexture, uv).x;
 }
 
 vec3 sampleCosineHemisphere(float u, float v, out float pdf) {
@@ -414,12 +416,15 @@ vec3 computeRadiance(Ray ray_in) {
 }
 
 void main() {
-    setSeed();
-
+    vec2 texUV = gl_FragCoord.xy / resolution;
     vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) / resolution;
     uv.y = -uv.y;
     Ray ray = rayGen(uv);
 
+    setSeed(texUV);
+
     vec3 radiance = computeRadiance(ray);
-    color = vec4(texture(accumTexture, gl_FragCoord.xy / resolution).xyz + radiance, 1.0);
+    color = vec4(texture(accumTexture, texUV).xyz + radiance, 1.0);
+
+    state = RNG_STATE.a;
 }

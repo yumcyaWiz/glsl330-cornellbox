@@ -1,5 +1,9 @@
 #ifndef _RENDERER_H
 #define _RENDERER_H
+#include <cstdint>
+#include <limits>
+#include <random>
+#include <vector>
 
 #include "glad/glad.h"
 #include "rectangle.h"
@@ -40,8 +44,16 @@ class Renderer {
     // setup RNG state texture
     glGenTextures(1, &stateTexture);
     glBindTexture(GL_TEXTURE_2D, stateTexture);
+    std::vector<uint32_t> seed(width * height);
+    std::random_device rnd_dev;
+    std::mt19937 mt(rnd_dev());
+    std::uniform_int_distribution<uint32_t> dist(
+        0, std::numeric_limits<uint32_t>::max());
+    for (int i = 0; i < width * height; ++i) {
+      seed[i] = dist(mt);
+    }
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER,
-                 GL_UNSIGNED_INT, 0);
+                 GL_UNSIGNED_INT, seed.data());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -72,6 +84,7 @@ class Renderer {
     pt_shader.setUniform("samples", samples);
     pt_shader.setUniform("resolution", resolution);
     pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
+    pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
     rectangle.draw(pt_shader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -152,7 +152,9 @@ class Shader {
     activate();
     const GLint location = glGetUniformLocation(program, uniform_name.c_str());
     glUniform1i(location, texture_unit_number);
-    glActiveTexture(GL_TEXTURE0);
+    const GLuint texture_units[6] = {GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2,
+                                     GL_TEXTURE3, GL_TEXTURE4, GL_TEXTURE5};
+    glActiveTexture(texture_units[texture_unit_number]);
     glBindTexture(GL_TEXTURE_2D, texture);
     deactivate();
   }

@@ -4,3 +4,6 @@
 [submodule "deps/glm"]
 	path = external/glm
 	url = git@github.com:g-truc/glm.git
+[submodule "external/GLSL-Shader-Includes"]
+	path = external/GLSL-Shader-Includes
+	url = git@github.com:tntmeijs/GLSL-Shader-Includes.git

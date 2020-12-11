@@ -7,7 +7,7 @@
 
 uniform uint samples;
 uniform float time;
-uniform vec2 resolution;
+uniform uvec2 resolution;
 uniform sampler2D accumTexture;
 uniform usampler2D stateTexture;
 

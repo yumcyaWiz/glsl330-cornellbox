@@ -149,6 +149,13 @@ class Shader {
     glUniform2fv(location, 1, glm::value_ptr(value));
     deactivate();
   }
+  void setUniform(const std::string& uniform_name,
+                  const glm::uvec2& value) const {
+    activate();
+    const GLint location = glGetUniformLocation(program, uniform_name.c_str());
+    glUniform2uiv(location, 1, glm::value_ptr(value));
+    deactivate();
+  }
 
   void setUniformTexture(const std::string& uniform_name, GLuint texture,
                          GLuint texture_unit_number) const {

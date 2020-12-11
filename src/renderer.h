@@ -71,7 +71,7 @@ class Renderer {
   }
 
   void render() {
-    const glm::vec2 resolution = glm::vec2(width, height);
+    const glm::uvec2 resolution = glm::uvec2(width, height);
 
     // path tracing
     pt_shader.setUniform("time", static_cast<float>(glfwGetTime()));

@@ -1,7 +1,7 @@
 #version 330 core
 
 uniform uint samples;
-uniform vec2 resolution;
+uniform uvec2 resolution;
 uniform sampler2D accumTexture;
 
 void main() {

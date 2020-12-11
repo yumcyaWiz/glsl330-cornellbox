@@ -10,3 +10,7 @@ target_include_directories(glad SYSTEM PUBLIC glad/include)
 
 # glm
 add_subdirectory(glm)
+
+# GLSL-Shader-Includes
+add_library(glsl-shader-includes INTERFACE)
+target_include_directories(glsl-shader-includes SYSTEM INTERFACE GLSL-Shader-Includes)

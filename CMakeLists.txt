@@ -8,7 +8,7 @@ target_compile_features(main PUBLIC cxx_std_17)
 set_target_properties(main PROPERTIES CXX_EXTENSIONS OFF)
 
 # deps
-add_subdirectory(deps)
+add_subdirectory(external)
 
 # OpenGL
 find_package(OpenGL REQUIRED)

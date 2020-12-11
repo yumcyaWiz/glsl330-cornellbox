@@ -68,12 +68,6 @@ class Renderer {
     GLuint attachments[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
     glDrawBuffers(2, attachments);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    // compile shaders
-    pt_shader.compileShader();
-    pt_shader.linkShader();
-    output_shader.compileShader();
-    output_shader.linkShader();
   }
 
   void render() {

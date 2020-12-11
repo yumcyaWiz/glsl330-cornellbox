@@ -34,13 +34,6 @@ class Shader {
   GLuint fragment_shader;
   GLuint program;
 
- public:
-  Shader() {}
-  Shader(const std::string& _vertex_shader_filepath,
-         const std::string& _fragment_shader_filepath)
-      : vertex_shader_filepath(_vertex_shader_filepath),
-        fragment_shader_filepath(_fragment_shader_filepath) {}
-
   void compileShader() {
     // compile vertex shader
     vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -116,6 +109,16 @@ class Shader {
       glDeleteProgram(program);
       return;
     }
+  }
+
+ public:
+  Shader() {}
+  Shader(const std::string& _vertex_shader_filepath,
+         const std::string& _fragment_shader_filepath)
+      : vertex_shader_filepath(_vertex_shader_filepath),
+        fragment_shader_filepath(_fragment_shader_filepath) {
+    compileShader();
+    linkShader();
   }
 
   void activate() const { glUseProgram(program); }

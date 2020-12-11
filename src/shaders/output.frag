@@ -1,6 +1,6 @@
 #version 330 core
 
-uniform int samples;
+uniform uint samples;
 uniform vec2 resolution;
 uniform sampler2D accumTexture;
 

@@ -130,7 +130,7 @@ class Shader {
   void setUniform(const std::string& uniform_name, GLuint value) const {
     activate();
     const GLint location = glGetUniformLocation(program, uniform_name.c_str());
-    glUniform1i(location, value);
+    glUniform1ui(location, value);
     deactivate();
   }
   void setUniform(const std::string& uniform_name, GLfloat value) const {

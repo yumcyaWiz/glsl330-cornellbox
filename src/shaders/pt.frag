@@ -5,7 +5,7 @@
 #define RAY_TMAX 10000.0
 #define MAX_DEPTH 100
 
-uniform int samples;
+uniform uint samples;
 uniform float time;
 uniform vec2 resolution;
 uniform sampler2D accumTexture;

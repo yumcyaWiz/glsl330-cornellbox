@@ -416,15 +416,19 @@ vec3 computeRadiance(Ray ray_in) {
 }
 
 void main() {
+    // set RNG seed
     vec2 texUV = gl_FragCoord.xy / resolution;
     setSeed(texUV);
 
+    // generate initial ray
     vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) / resolution;
     uv.y = -uv.y;
     Ray ray = rayGen(uv);
 
+    // accumulate sampled color on accumTexture
     vec3 radiance = computeRadiance(ray);
     color = texture(accumTexture, texUV).xyz + radiance;
 
+    // save RNG state on stateTexture
     state = RNG_STATE.a;
 }

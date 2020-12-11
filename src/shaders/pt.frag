@@ -11,8 +11,8 @@ uniform vec2 resolution;
 uniform sampler2D accumTexture;
 uniform usampler2D stateTexture;
 
-layout (location = 0) out vec4 color;
-layout (location = 1) out vec4 state;
+layout (location = 0) out vec3 color;
+layout (location = 1) out uint state;
 
 float atan2(float y, float x) {
     return x == 0.0 ? sign(y) * PI / 2.0 : atan(y, x);
@@ -424,7 +424,7 @@ void main() {
     Ray ray = rayGen(uv);
 
     vec3 radiance = computeRadiance(ray);
-    color = vec4(texture(accumTexture, texUV).xyz + radiance, 1.0);
+    color = texture(accumTexture, texUV).xyz + radiance;
 
-    state = vec4(vec3(RNG_STATE.a), 1.0);
+    state = RNG_STATE.a;
 }

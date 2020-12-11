@@ -44,18 +44,18 @@ class Renderer {
     // setup RNG state texture
     glGenTextures(1, &stateTexture);
     glBindTexture(GL_TEXTURE_2D, stateTexture);
-    std::vector<uint32_t> seed(3 * width * height);
+    std::vector<uint32_t> seed(width * height);
     std::random_device rnd_dev;
     std::mt19937 mt(rnd_dev());
     std::uniform_int_distribution<uint32_t> dist(
-        0, std::numeric_limits<uint32_t>::max());
-    for (int i = 0; i < 3 * width * height; ++i) {
+        1, std::numeric_limits<uint32_t>::max());
+    for (int i = 0; i < seed.size(); ++i) {
       seed[i] = dist(mt);
     }
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32UI, width, height, 0, GL_RGB_INTEGER,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER,
                  GL_UNSIGNED_INT, seed.data());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // setup accumulate FBO

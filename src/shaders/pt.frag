@@ -2,6 +2,7 @@
 
 #include global.glsl
 #include uniform.glsl
+#include rng.glsl
 
 layout (location = 0) out vec3 color;
 layout (location = 1) out uint state;
@@ -282,33 +283,6 @@ Hit intersect(Ray ray) {
     }
 
     return ret;
-}
-
-uint xorshift32(inout XORShift32_state state) {
-    uint x = state.a;
-    x ^= x << 13u;
-    x ^= x >> 17u;
-    x ^= x << 5u;
-    state.a = x;
-    return x;
-}
-
-float random() {
-    return float(xorshift32(RNG_STATE)) * 2.3283064e-10;
-}
-
-uint hash( uint x ) {
-    x += ( x << 10u );
-    x ^= ( x >>  6u );
-    x += ( x <<  3u );
-    x ^= ( x >> 11u );
-    x += ( x << 15u );
-    return x;
-}
-
-void setSeed(vec2 uv) {
-    // RNG_STATE.a = hash(uint(gl_FragCoord.x + resolution.x * gl_FragCoord.y)) + hash(uint(samples));
-    RNG_STATE.a = texture(stateTexture, uv).x;
 }
 
 vec3 sampleCosineHemisphere(float u, float v, out float pdf) {

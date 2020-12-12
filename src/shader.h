@@ -11,20 +11,6 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-const std::string fileToString(const std::string& filename) {
-  std::ifstream file(filename);
-  if (!file) {
-    std::cerr << "failed to open " << filename << std::endl;
-    std::exit(EXIT_FAILURE);
-  }
-
-  // convert file content to string
-  std::stringstream ss;
-  ss << file.rdbuf();
-  file.close();
-  return ss.str();
-}
-
 class Shader {
  private:
   const std::string vertex_shader_filepath;
@@ -38,7 +24,7 @@ class Shader {
   void compileShader() {
     // compile vertex shader
     vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    vertex_shader_source = fileToString(vertex_shader_filepath);
+    vertex_shader_source = Shadinclude::load(vertex_shader_filepath);
     const char* vertex_shader_source_c_str = vertex_shader_source.c_str();
     glShaderSource(vertex_shader, 1, &vertex_shader_source_c_str, nullptr);
     glCompileShader(vertex_shader);
@@ -62,7 +48,7 @@ class Shader {
 
     // compile fragment shader
     fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    fragment_shader_source = fileToString(fragment_shader_filepath);
+    fragment_shader_source = Shadinclude::load(fragment_shader_filepath);
     const char* fragment_shader_source_c_str = fragment_shader_source.c_str();
     glShaderSource(fragment_shader, 1, &fragment_shader_source_c_str, nullptr);
     glCompileShader(fragment_shader);

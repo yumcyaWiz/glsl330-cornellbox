@@ -3,26 +3,13 @@
 #include global.glsl
 #include uniform.glsl
 #include rng.glsl
+#include raygen.glsl
 
 layout (location = 0) out vec3 color;
 layout (location = 1) out uint state;
 
 float atan2(float y, float x) {
     return x == 0.0 ? sign(y) * PI / 2.0 : atan(y, x);
-}
-
-Ray rayGen(vec2 uv) {
-    vec3 camPos = vec3(278, 273, -900);
-    vec3 camForward = vec3(0, 0, 1);
-    vec3 camRight = vec3(1, 0, 0);
-    vec3 camUp = vec3(0, 1, 0);
-    vec3 pinholePos = camPos + 1.7071067811865477 * camForward;
-    vec3 sensorPos = camPos + uv.x * camRight + uv.y * camUp;
-
-    Ray ray;
-    ray.origin = camPos;
-    ray.direction = normalize(pinholePos - sensorPos);
-    return ray;
 }
 
 Hit intersect_each(Ray ray, Primitive primitive) {

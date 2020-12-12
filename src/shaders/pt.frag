@@ -1,11 +1,7 @@
 #version 330 core
-#include global.glsl
 
-uniform uint samples;
-uniform float time;
-uniform uvec2 resolution;
-uniform sampler2D accumTexture;
-uniform usampler2D stateTexture;
+#include global.glsl
+#include uniform.glsl
 
 layout (location = 0) out vec3 color;
 layout (location = 1) out uint state;

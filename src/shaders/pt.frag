@@ -1,9 +1,5 @@
 #version 330 core
-#define PI 3.14159265358979323846
-
-#define RAY_TMIN 0.001
-#define RAY_TMAX 10000.0
-#define MAX_DEPTH 100
+#include global.glsl
 
 uniform uint samples;
 uniform float time;
@@ -18,11 +14,6 @@ float atan2(float y, float x) {
     return x == 0.0 ? sign(y) * PI / 2.0 : atan(y, x);
 }
 
-struct Ray {
-    vec3 origin;
-    vec3 direction;
-};
-
 Ray rayGen(vec2 uv) {
     vec3 camPos = vec3(278, 273, -900);
     vec3 camForward = vec3(0, 0, 1);
@@ -36,30 +27,6 @@ Ray rayGen(vec2 uv) {
     ray.direction = normalize(pinholePos - sensorPos);
     return ray;
 }
-
-struct Hit {
-    bool hit;
-    float t;
-    vec3 hitPos;
-    vec3 hitNormal;
-    vec3 dpdu;
-    vec3 dpdv;
-    float u;
-    float v;
-    int primID;
-};
-
-struct Primitive {
-    int id;
-    int type;
-    vec3 center;
-    float radius;
-    vec3 leftCornerPoint;
-    vec3 up;
-    vec3 right;
-    vec3 kd;
-    vec3 le;
-};
 
 Hit intersect_each(Ray ray, Primitive primitive) {
     Hit ret;
@@ -321,12 +288,6 @@ Hit intersect(Ray ray) {
     return ret;
 }
 
-
-// XORShift
-struct XORShift32_state {
-    uint a;
-};
-
 uint xorshift32(inout XORShift32_state state) {
     uint x = state.a;
     x ^= x << 13u;
@@ -336,7 +297,6 @@ uint xorshift32(inout XORShift32_state state) {
     return x;
 }
 
-XORShift32_state RNG_STATE;
 float random() {
     return float(xorshift32(RNG_STATE)) * 2.3283064e-10;
 }

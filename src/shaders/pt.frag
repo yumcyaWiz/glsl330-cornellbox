@@ -6,17 +6,10 @@
 #include raygen.frag
 #include intersect.frag
 #include closest_hit.frag
+#include sampling.frag
 
 layout (location = 0) out vec3 color;
 layout (location = 1) out uint state;
-
-vec3 sampleCosineHemisphere(float u, float v, out float pdf) {
-    float theta = 0.5 * acos(clamp(1.0 - 2.0 * u, -1.0, 1.0));
-    float phi = 2.0 * PI * v;
-    float y = cos(theta);
-    pdf = y / PI;
-    return vec3(cos(phi) * sin(theta), y, sin(phi) * sin(theta));
-}
 
 vec3 worldToLocal(vec3 v, vec3 lx, vec3 ly, vec3 lz) {
     return vec3(dot(v, lx), dot(v, ly), dot(v, lz));

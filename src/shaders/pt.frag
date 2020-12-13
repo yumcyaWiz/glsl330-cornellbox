@@ -1,9 +1,9 @@
 #version 330 core
 
-#include global.glsl
-#include uniform.glsl
-#include rng.glsl
-#include raygen.glsl
+#include global.frag
+#include uniform.frag
+#include rng.frag
+#include raygen.frag
 #include intersect.frag
 
 layout (location = 0) out vec3 color;

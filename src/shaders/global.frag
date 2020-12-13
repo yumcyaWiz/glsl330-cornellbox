@@ -1,8 +1,9 @@
-#define PI 3.14159265358979323846
+const float PI = 3.14159265358979323846;
+const float PI_INV = 1 / PI;
 
-#define RAY_TMIN 0.001
-#define RAY_TMAX 10000.0
-#define MAX_DEPTH 100
+const float RAY_TMIN =  0.001;
+const float RAY_TMAX = 10000.0;
+const uint MAX_DEPTH = 1000u;
 
 struct Ray {
     vec3 origin;

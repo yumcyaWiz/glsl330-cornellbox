@@ -18,7 +18,7 @@ vec3 computeRadiance(in Ray ray_in) {
     float russian_roulette_prob = 0.99;
     vec3 color = vec3(0);
     vec3 throughput = vec3(1);
-    for(int i = 0; i < MAX_DEPTH; ++i) {
+    for(uint i = 0u; i < MAX_DEPTH; ++i) {
         // russian roulette
         if(random() >= russian_roulette_prob) {
             break;

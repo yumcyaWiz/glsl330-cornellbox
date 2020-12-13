@@ -25,7 +25,7 @@ vec3 computeRadiance(in Ray ray_in) {
         }
         throughput /= russian_roulette_prob;
 
-        Hit info;
+        IntersectInfo info;
         if(intersect(ray, info)) {
             Primitive hitPrimitive = primitives[info.primID];
 

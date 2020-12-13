@@ -9,7 +9,7 @@ struct Ray {
     vec3 direction;
 };
 
-struct Hit {
+struct IntersectInfo {
     float t;
     vec3 hitPos;
     vec3 hitNormal;

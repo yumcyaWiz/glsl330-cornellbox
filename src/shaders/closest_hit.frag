@@ -1,4 +1,4 @@
-bool intersect_each(in Ray ray, in Primitive primitive, out Hit info) {
+bool intersect_each(in Ray ray, in Primitive primitive, out IntersectInfo info) {
     // Sphere
     if(primitive.type == 0) {
         return intersectSphere(primitive.center, primitive.radius, ray, info);
@@ -9,12 +9,12 @@ bool intersect_each(in Ray ray, in Primitive primitive, out Hit info) {
     }
 }
 
-bool intersect(in Ray ray, out Hit info) {
+bool intersect(in Ray ray, out IntersectInfo info) {
     bool hit = false;
     info.t = RAY_TMAX;
 
     for(int i = 0; i < 16; ++i) {
-        Hit temp;
+        IntersectInfo temp;
         if(intersect_each(ray, primitives[i], temp)) {
             if(temp.t < info.t) {
                 hit = true;

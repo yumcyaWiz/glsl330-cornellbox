@@ -1,5 +1,5 @@
 
-bool intersectSphere(in vec3 center, in float radius, in Ray ray, out Hit info) {
+bool intersectSphere(in vec3 center, in float radius, in Ray ray, out IntersectInfo info) {
     float b = dot(ray.origin - center, ray.direction);
     float len = length(ray.origin - center);
     float c = len*len - radius*radius;
@@ -37,7 +37,7 @@ bool intersectSphere(in vec3 center, in float radius, in Ray ray, out Hit info) 
     return true;
 }
 
-bool intersectPlane(in vec3 leftCornerPoint, in vec3 right, in vec3 up, in Ray ray, out Hit info) {
+bool intersectPlane(in vec3 leftCornerPoint, in vec3 right, in vec3 up, in Ray ray, out IntersectInfo info) {
     vec3 normal = normalize(cross(right, up));
     vec3 center = leftCornerPoint + 0.5 * right + 0.5 * up;
     vec3 rightDir = normalize(right);

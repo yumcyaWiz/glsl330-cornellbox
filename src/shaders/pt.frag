@@ -12,7 +12,7 @@
 layout (location = 0) out vec3 color;
 layout (location = 1) out uint state;
 
-vec3 computeRadiance(Ray ray_in) {
+vec3 computeRadiance(in Ray ray_in) {
     Ray ray = ray_in;
 
     float russian_roulette_prob = 0.99;

@@ -1,4 +1,4 @@
-Hit intersect_each(Ray ray, Primitive primitive) {
+Hit intersect_each(in Ray ray, in Primitive primitive) {
     Hit ret;
 
     // Sphere

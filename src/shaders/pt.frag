@@ -4,99 +4,21 @@
 #include uniform.glsl
 #include rng.glsl
 #include raygen.glsl
+#include intersect.frag
 
 layout (location = 0) out vec3 color;
 layout (location = 1) out uint state;
-
-float atan2(float y, float x) {
-    return x == 0.0 ? sign(y) * PI / 2.0 : atan(y, x);
-}
 
 Hit intersect_each(Ray ray, Primitive primitive) {
     Hit ret;
 
     // Sphere
     if(primitive.type == 0) {
-        Hit ret;
-
-        float b = dot(ray.origin - primitive.center, ray.direction);
-        float len = length(ray.origin - primitive.center);
-        float c = len*len - primitive.radius*primitive.radius;
-        float D = b*b - c;
-        if(D < 0.0) {
-            ret.hit = false;
-            return ret;
-        }
-
-        float t0 = -b - sqrt(D);
-        float t1 = -b + sqrt(D);
-        float t = t0;
-        if(t < RAY_TMIN || t > RAY_TMAX) {
-            t = t1;
-            if(t < RAY_TMIN || t > RAY_TMAX) { 
-                ret.hit = false;
-                return ret;
-            }
-        }
-
-        ret.hit = true;
-        ret.t = t;
-        ret.hitPos = ray.origin + t*ray.direction;
-
-        vec3 r = ret.hitPos - primitive.center;
-        ret.hitNormal = normalize(r);
-        ret.dpdu = normalize(vec3(-r.z, 0, r.x));
-
-        float phi = atan2(r.z, r.x);
-        if(phi < 0.0) {
-            phi += 2.0 * PI;
-        }
-        float theta = acos(clamp(r.y / primitive.radius, -1.0, 1.0));
-        ret.dpdv = normalize(vec3(cos(phi) * r.y, -primitive.radius * sin(theta), sin(phi) * r.y));
-
-        ret.u = phi / (2.0 * PI);
-        ret.v = theta / PI;
-
-        return ret;
+        intersectSphere(primitive.center, primitive.radius, ray, ret);
     }
     // Plane
     else if(primitive.type == 1) {
-        vec3 normal = normalize(cross(primitive.right, primitive.up));
-        vec3 center = primitive.leftCornerPoint + 0.5 * primitive.right + 0.5 * primitive.up;
-        vec3 rightDir = normalize(primitive.right);
-        float rightLength = length(primitive.right);
-        vec3 upDir = normalize(primitive.up);
-        float upLength = length(primitive.up);
-
-        Hit ret;
-        float t = -dot(ray.origin - center, normal) / dot(ray.direction, normal);
-        if(t < RAY_TMIN || t > RAY_TMAX) {
-            ret.hit = false;
-            return ret;
-        }
-
-        vec3 hitPos = ray.origin + t*ray.direction;
-        float dx = dot(hitPos - primitive.leftCornerPoint, rightDir);
-        float dy = dot(hitPos - primitive.leftCornerPoint, upDir);
-        if(dx < 0.0 || dx > rightLength || dy < 0.0 || dy > upLength) {
-            ret.hit = false;
-            return ret;
-        }
-
-        ret.hit = true;
-        ret.t = t;
-        ret.hitPos = hitPos;
-        if(dot(-ray.direction, normal) > 0.0) {
-            ret.hitNormal = normal;
-        }
-        else {
-            ret.hitNormal = -normal;
-        }
-        ret.dpdu = rightDir;
-        ret.dpdv = upDir;
-        ret.u = dx / rightLength;
-        ret.v = dy / upLength;
-        return ret;
+        intersectPlane(primitive.leftCornerPoint, primitive.right, primitive.up, ray, ret);
     }
     
     return ret;

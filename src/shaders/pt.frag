@@ -42,7 +42,7 @@ vec3 computeRadiance(in Ray ray_in) {
             vec3 next_direction = localToWorld(next_direction_local, info.dpdu, info.hitNormal, info.dpdv);
 
             // update throughput
-            vec3 BRDF = hitPrimitive.kd / PI;
+            vec3 BRDF = hitPrimitive.kd * PI_INV;
             float cos_term = abs(dot(next_direction, info.hitNormal));
             throughput *= BRDF * cos_term / pdf_solid;
 

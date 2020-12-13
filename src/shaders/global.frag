@@ -1,5 +1,5 @@
 const float PI = 3.14159265358979323846;
-const float PI_INV = 1 / PI;
+const float PI_INV = 1.0 / PI;
 
 const float RAY_TMIN =  0.001;
 const float RAY_TMAX = 10000.0;

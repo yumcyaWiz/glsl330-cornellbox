@@ -10,13 +10,13 @@ Render Cornell Box with Path Tracing in GLSL.
 
 ## Setup
 
-```sh
+```bash
 git submodule update --init
 ```
 
 ## Build
 
-```sh
+```bash
 mkdir build
 cd build
 cmake ..
@@ -28,3 +28,4 @@ make
 * [GLFW](https://github.com/glfw/glfw) - Zlib License
 * [glad](https://github.com/Dav1dde/glad) - Public Domain, WTFPL or CC0
 * [glm](https://github.com/g-truc/glm) - The Happy Bunny License or MIT License
+* [GLSL Shader Includes](https://github.com/tntmeijs/GLSL-Shader-Includes) - MIT License

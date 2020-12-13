@@ -10,7 +10,6 @@ struct Ray {
 };
 
 struct Hit {
-    bool hit;
     float t;
     vec3 hitPos;
     vec3 hitNormal;

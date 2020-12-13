@@ -1,12 +1,11 @@
 
-void intersectSphere(in vec3 center, in float radius, in Ray ray, out Hit info) {
+bool intersectSphere(in vec3 center, in float radius, in Ray ray, out Hit info) {
     float b = dot(ray.origin - center, ray.direction);
     float len = length(ray.origin - center);
     float c = len*len - radius*radius;
     float D = b*b - c;
     if(D < 0.0) {
-        info.hit = false;
-        return;
+        return false;
     }
 
     float t0 = -b - sqrt(D);
@@ -15,12 +14,10 @@ void intersectSphere(in vec3 center, in float radius, in Ray ray, out Hit info) 
     if(t < RAY_TMIN || t > RAY_TMAX) {
         t = t1;
         if(t < RAY_TMIN || t > RAY_TMAX) { 
-            info.hit = false;
-            return;
+            return false;
         }
     }
 
-    info.hit = true;
     info.t = t;
     info.hitPos = ray.origin + t*ray.direction;
 
@@ -37,9 +34,10 @@ void intersectSphere(in vec3 center, in float radius, in Ray ray, out Hit info) 
 
     info.u = phi / (2.0 * PI);
     info.v = theta / PI;
+    return true;
 }
 
-void intersectPlane(in vec3 leftCornerPoint, in vec3 right, in vec3 up, in Ray ray, out Hit info) {
+bool intersectPlane(in vec3 leftCornerPoint, in vec3 right, in vec3 up, in Ray ray, out Hit info) {
     vec3 normal = normalize(cross(right, up));
     vec3 center = leftCornerPoint + 0.5 * right + 0.5 * up;
     vec3 rightDir = normalize(right);
@@ -49,19 +47,16 @@ void intersectPlane(in vec3 leftCornerPoint, in vec3 right, in vec3 up, in Ray r
 
     float t = -dot(ray.origin - center, normal) / dot(ray.direction, normal);
     if(t < RAY_TMIN || t > RAY_TMAX) {
-        info.hit = false;
-        return;
+        return false;
     }
 
     vec3 hitPos = ray.origin + t*ray.direction;
     float dx = dot(hitPos - leftCornerPoint, rightDir);
     float dy = dot(hitPos - leftCornerPoint, upDir);
     if(dx < 0.0 || dx > rightLength || dy < 0.0 || dy > upLength) {
-        info.hit = false;
-        return;
+        return false;
     }
 
-    info.hit = true;
     info.t = t;
     info.hitPos = hitPos;
     if(dot(-ray.direction, normal) > 0.0) {
@@ -74,4 +69,5 @@ void intersectPlane(in vec3 leftCornerPoint, in vec3 right, in vec3 up, in Ray r
     info.dpdv = upDir;
     info.u = dx / rightLength;
     info.v = dy / upLength;
+    return true;
 }

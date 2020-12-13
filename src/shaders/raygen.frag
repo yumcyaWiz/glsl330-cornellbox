@@ -1,4 +1,4 @@
-Ray rayGen(vec2 uv) {
+Ray rayGen(in vec2 uv) {
     vec3 camPos = vec3(278, 273, -900);
     vec3 camForward = vec3(0, 0, 1);
     vec3 camRight = vec3(1, 0, 0);

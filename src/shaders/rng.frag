@@ -11,6 +11,6 @@ float random() {
     return float(xorshift32(RNG_STATE)) * 2.3283064e-10;
 }
 
-void setSeed(vec2 uv) {
+void setSeed(in vec2 uv) {
     RNG_STATE.a = texture(stateTexture, uv).x;
 }

@@ -1,6 +1,3 @@
-float atan2(in float y, in float x) {
-    return x == 0.0 ? sign(y) * PI / 2.0 : atan(y, x);
-}
 
 void intersectSphere(in vec3 center, in float radius, in Ray ray, out Hit info) {
     float b = dot(ray.origin - center, ray.direction);

@@ -4,19 +4,13 @@
 #include uniform.frag
 #include rng.frag
 #include raygen.frag
+#include util.frag
 #include intersect.frag
 #include closest_hit.frag
 #include sampling.frag
 
 layout (location = 0) out vec3 color;
 layout (location = 1) out uint state;
-
-vec3 worldToLocal(vec3 v, vec3 lx, vec3 ly, vec3 lz) {
-    return vec3(dot(v, lx), dot(v, ly), dot(v, lz));
-}
-vec3 localToWorld(vec3 v, vec3 lx, vec3 ly, vec3 lz) {
-    return vec3(dot(v, vec3(lx.x, ly.x, lz.x)), dot(v, vec3(lx.y, ly.y, lz.y)), dot(v, vec3(lx.z, ly.z, lz.z)));
-}
 
 vec3 computeRadiance(Ray ray_in) {
     Ray ray = ray_in;

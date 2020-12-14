@@ -260,9 +260,9 @@ class Renderer {
   void clear() {
     // clear accumTexture
     glBindTexture(GL_TEXTURE_2D, accumTexture);
-    std::vector<GLfloat> data(3 * resolution[0] * resolution[1]);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, resolution[0], resolution[1],
-                    GL_RGB, GL_FLOAT, data.data());
+    std::vector<GLfloat> data(3 * resolution.x * resolution.y);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, resolution.x, resolution.y, GL_RGB,
+                    GL_FLOAT, data.data());
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // update texture uniforms

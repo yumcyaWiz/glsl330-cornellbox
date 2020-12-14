@@ -29,6 +29,7 @@ struct Primitive {
     vec3 leftCornerPoint;
     vec3 up;
     vec3 right;
+    int brdf_type;
     vec3 kd;
     vec3 le;
 };

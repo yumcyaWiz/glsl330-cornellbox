@@ -78,7 +78,6 @@ class Renderer {
 
   void render() {
     // path tracing
-    pt_shader.setUniform("samples", samples);
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
     rectangle.draw(pt_shader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

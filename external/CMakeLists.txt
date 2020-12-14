@@ -14,3 +14,7 @@ add_subdirectory(glm)
 # GLSL-Shader-Includes
 add_library(glsl-shader-includes INTERFACE)
 target_include_directories(glsl-shader-includes SYSTEM INTERFACE GLSL-Shader-Includes)
+
+# imgui
+add_library(imgui imgui/imgui.cpp imgui/imgui_widgets.cpp imgui/imgui_draw.cpp imgui/imgui_demo.cpp)
+target_include_directories(imgui SYSTEM PRIVATE imgui)

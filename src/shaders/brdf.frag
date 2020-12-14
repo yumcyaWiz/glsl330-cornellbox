@@ -10,6 +10,7 @@ vec3 BRDF(in vec3 wo, in vec3 wi, in int brdf_type, in vec3 kd) {
         break;
         // glass
         case 2:
+        return kd / abs(wi.y);
         break;
     }
 }

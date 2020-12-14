@@ -36,6 +36,9 @@ vec3 computeRadiance(in Ray ray_in) {
 
             // Le 
             color += throughput * hitPrimitive.le;
+            if(length(hitPrimitive.le) > 0.0) {
+                break;
+            }
 
             // BRDF Sampling
             float pdf;

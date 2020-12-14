@@ -9,6 +9,8 @@
 #include closest_hit.frag
 #include sampling.frag
 
+in vec2 texCoord;
+
 layout (location = 0) out vec3 color;
 layout (location = 1) out uint state;
 
@@ -59,8 +61,7 @@ vec3 computeRadiance(in Ray ray_in) {
 
 void main() {
     // set RNG seed
-    vec2 texUV = gl_FragCoord.xy / resolution;
-    setSeed(texUV);
+    setSeed(texCoord);
 
     // generate initial ray
     vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) * vec2(resolutionYInv);
@@ -69,7 +70,7 @@ void main() {
 
     // accumulate sampled color on accumTexture
     vec3 radiance = computeRadiance(ray);
-    color = texture(accumTexture, texUV).xyz + radiance;
+    color = texture(accumTexture, texCoord).xyz + radiance;
 
     // save RNG state on stateTexture
     state = RNG_STATE.a;

@@ -3,7 +3,7 @@ const float PI_INV = 1.0 / PI;
 
 const float RAY_TMIN =  0.001;
 const float RAY_TMAX = 10000.0;
-const uint MAX_DEPTH = 1000u;
+const int MAX_DEPTH = 1000;
 
 struct Ray {
     vec3 origin;

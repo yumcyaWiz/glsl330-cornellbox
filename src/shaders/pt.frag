@@ -17,10 +17,10 @@ layout (location = 1) out uint state;
 vec3 computeRadiance(in Ray ray_in) {
     Ray ray = ray_in;
 
-    float russian_roulette_prob = 0.99;
+    const float russian_roulette_prob = 0.99;
     vec3 color = vec3(0);
     vec3 throughput = vec3(1);
-    for(uint i = 0u; i < MAX_DEPTH; ++i) {
+    for(int i = 0; i < MAX_DEPTH; ++i) {
         // russian roulette
         if(random() >= russian_roulette_prob) {
             break;
@@ -64,7 +64,7 @@ void main() {
     setSeed(texCoord);
 
     // generate initial ray
-    vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) * vec2(resolutionYInv);
+    vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) * resolutionYInv;
     uv.y = -uv.y;
     Ray ray = rayGen(uv);
 

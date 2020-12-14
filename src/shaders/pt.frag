@@ -8,6 +8,9 @@
 #include intersect.frag
 #include closest_hit.frag
 #include sampling.frag
+#include brdf.frag
+
+in vec2 texCoord;
 
 layout (location = 0) out vec3 color;
 layout (location = 1) out uint state;
@@ -15,10 +18,10 @@ layout (location = 1) out uint state;
 vec3 computeRadiance(in Ray ray_in) {
     Ray ray = ray_in;
 
-    float russian_roulette_prob = 0.99;
+    const float russian_roulette_prob = 0.99;
     vec3 color = vec3(0);
     vec3 throughput = vec3(1);
-    for(uint i = 0u; i < MAX_DEPTH; ++i) {
+    for(int i = 0; i < MAX_DEPTH; ++i) {
         // russian roulette
         if(random() >= russian_roulette_prob) {
             break;
@@ -28,25 +31,30 @@ vec3 computeRadiance(in Ray ray_in) {
         IntersectInfo info;
         if(intersect(ray, info)) {
             Primitive hitPrimitive = primitives[info.primID];
+            vec3 wo = -ray.direction;
+            vec3 wo_local = worldToLocal(wo, info.dpdu, info.hitNormal, info.dpdv);
 
             // Le 
             color += throughput * hitPrimitive.le;
-
-            // BRDF Sampling
-            float pdf_solid;
-            vec3 next_direction_local = sampleCosineHemisphere(random(), random(), pdf_solid);
-            // prevent NaN
-            if(pdf_solid == 0.0) {
+            if(length(hitPrimitive.le) > 0.0) {
                 break;
             }
-            vec3 next_direction = localToWorld(next_direction_local, info.dpdu, info.hitNormal, info.dpdv);
+
+            // BRDF Sampling
+            float pdf;
+            vec3 wi_local = sampleBRDF(wo_local, hitPrimitive.brdf_type, pdf);
+            // prevent NaN
+            if(pdf == 0.0) {
+                break;
+            }
+            vec3 wi = localToWorld(wi_local, info.dpdu, info.hitNormal, info.dpdv);
 
             // update throughput
-            vec3 BRDF = hitPrimitive.kd * PI_INV;
-            float cos_term = abs(dot(next_direction, info.hitNormal));
-            throughput *= BRDF * cos_term / pdf_solid;
+            vec3 brdf = BRDF(wo_local, wi_local, hitPrimitive.brdf_type, hitPrimitive.kd);
+            float cos_term = abs(wi_local.y);
+            throughput *= brdf * cos_term / pdf;
 
-            ray = Ray(info.hitPos, next_direction);
+            ray = Ray(info.hitPos, wi);
         }
         else {
             color += throughput * vec3(0);
@@ -59,17 +67,16 @@ vec3 computeRadiance(in Ray ray_in) {
 
 void main() {
     // set RNG seed
-    vec2 texUV = gl_FragCoord.xy / resolution;
-    setSeed(texUV);
+    setSeed(texCoord);
 
     // generate initial ray
-    vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) / resolution;
+    vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) * resolutionYInv;
     uv.y = -uv.y;
     Ray ray = rayGen(uv);
 
     // accumulate sampled color on accumTexture
     vec3 radiance = computeRadiance(ray);
-    color = texture(accumTexture, texUV).xyz + radiance;
+    color = texture(accumTexture, texCoord).xyz + radiance;
 
     // save RNG state on stateTexture
     state = RNG_STATE.a;

@@ -59,12 +59,7 @@ bool intersectPlane(in vec3 leftCornerPoint, in vec3 right, in vec3 up, in Ray r
 
     info.t = t;
     info.hitPos = hitPos;
-    if(dot(-ray.direction, normal) > 0.0) {
-        info.hitNormal = normal;
-    }
-    else {
-        info.hitNormal = -normal;
-    }
+    info.hitNormal = normal;
     info.dpdu = rightDir;
     info.dpdv = upDir;
     info.u = dx / rightLength;

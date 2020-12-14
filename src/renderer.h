@@ -11,7 +11,7 @@
 
 class Renderer {
  private:
-  const glm::uvec2 resolution;
+  glm::uvec2 resolution;
   unsigned int samples;
 
   GLuint accumTexture;
@@ -22,6 +22,171 @@ class Renderer {
 
   Shader pt_shader;
   Shader output_shader;
+
+  void setCornellBoxScene() {
+    const auto white1 = glm::vec3(0.8);
+    const auto white2 = glm::vec3(0.99);
+    const auto red = glm::vec3(0.8, 0.05, 0.05);
+    const auto green = glm::vec3(0.05, 0.8, 0.05);
+    const auto light = glm::vec3(34, 19, 10);
+
+    pt_shader.setUniform("primitives[0].id", 0);
+    pt_shader.setUniform("primitives[0].type", 1);
+    pt_shader.setUniform("primitives[0].leftCornerPoint", glm::vec3(0));
+    pt_shader.setUniform("primitives[0].right", glm::vec3(0, 0, 559.2));
+    pt_shader.setUniform("primitives[0].up", glm::vec3(556, 0, 0));
+    pt_shader.setUniform("primitives[0].brdf_type", 0);
+    pt_shader.setUniform("primitives[0].kd", white1);
+    pt_shader.setUniform("primitives[0].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[1].id", 1);
+    pt_shader.setUniform("primitives[1].type", 1);
+    pt_shader.setUniform("primitives[1].leftCornerPoint", glm::vec3(0));
+    pt_shader.setUniform("primitives[1].right", glm::vec3(0, 548.8, 0));
+    pt_shader.setUniform("primitives[1].up", glm::vec3(0, 0, 559.2));
+    pt_shader.setUniform("primitives[1].brdf_type", 0);
+    pt_shader.setUniform("primitives[1].kd", green);
+    pt_shader.setUniform("primitives[1].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[2].id", 2);
+    pt_shader.setUniform("primitives[2].type", 1);
+    pt_shader.setUniform("primitives[2].leftCornerPoint", glm::vec3(556, 0, 0));
+    pt_shader.setUniform("primitives[2].right", glm::vec3(0, 0, 559.2));
+    pt_shader.setUniform("primitives[2].up", glm::vec3(0, 548.8, 0));
+    pt_shader.setUniform("primitives[2].brdf_type", 0);
+    pt_shader.setUniform("primitives[2].kd", red);
+    pt_shader.setUniform("primitives[2].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[3].id", 3);
+    pt_shader.setUniform("primitives[3].type", 1);
+    pt_shader.setUniform("primitives[3].leftCornerPoint",
+                         glm::vec3(0, 548.8, 0));
+    pt_shader.setUniform("primitives[3].right", glm::vec3(556, 0, 0));
+    pt_shader.setUniform("primitives[3].up", glm::vec3(0, 0, 559.2));
+    pt_shader.setUniform("primitives[3].brdf_type", 0);
+    pt_shader.setUniform("primitives[3].kd", white1);
+    pt_shader.setUniform("primitives[3].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[4].id", 4);
+    pt_shader.setUniform("primitives[4].type", 1);
+    pt_shader.setUniform("primitives[4].leftCornerPoint",
+                         glm::vec3(0, 0, 559.2));
+    pt_shader.setUniform("primitives[4].right", glm::vec3(0, 548.8, 0));
+    pt_shader.setUniform("primitives[4].up", glm::vec3(556, 0, 0));
+    pt_shader.setUniform("primitives[4].brdf_type", 0);
+    pt_shader.setUniform("primitives[4].kd", white1);
+    pt_shader.setUniform("primitives[4].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[5].id", 5);
+    pt_shader.setUniform("primitives[5].type", 1);
+    pt_shader.setUniform("primitives[5].leftCornerPoint",
+                         glm::vec3(130, 165, 65));
+    pt_shader.setUniform("primitives[5].right", glm::vec3(-48, 0, 160));
+    pt_shader.setUniform("primitives[5].up", glm::vec3(160, 0, 49));
+    pt_shader.setUniform("primitives[5].brdf_type", 2);
+    pt_shader.setUniform("primitives[5].kd", white1);
+    pt_shader.setUniform("primitives[5].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[6].id", 6);
+    pt_shader.setUniform("primitives[6].type", 1);
+    pt_shader.setUniform("primitives[6].leftCornerPoint",
+                         glm::vec3(290, 0, 114));
+    pt_shader.setUniform("primitives[6].right", glm::vec3(0, 165, 0));
+    pt_shader.setUniform("primitives[6].up", glm::vec3(-50, 0, 158));
+    pt_shader.setUniform("primitives[6].brdf_type", 2);
+    pt_shader.setUniform("primitives[6].kd", white1);
+    pt_shader.setUniform("primitives[6].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[7].id", 7);
+    pt_shader.setUniform("primitives[7].type", 1);
+    pt_shader.setUniform("primitives[7].leftCornerPoint",
+                         glm::vec3(130, 0, 65));
+    pt_shader.setUniform("primitives[7].right", glm::vec3(0, 165, 0));
+    pt_shader.setUniform("primitives[7].up", glm::vec3(160, 0, 49));
+    pt_shader.setUniform("primitives[7].brdf_type", 2);
+    pt_shader.setUniform("primitives[7].kd", white1);
+    pt_shader.setUniform("primitives[7].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[8].id", 8);
+    pt_shader.setUniform("primitives[8].type", 1);
+    pt_shader.setUniform("primitives[8].leftCornerPoint",
+                         glm::vec3(82, 0, 225));
+    pt_shader.setUniform("primitives[8].right", glm::vec3(0, 165, 0));
+    pt_shader.setUniform("primitives[8].up", glm::vec3(48, 0, -160));
+    pt_shader.setUniform("primitives[8].brdf_type", 2);
+    pt_shader.setUniform("primitives[8].kd", white1);
+    pt_shader.setUniform("primitives[8].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[9].id", 9);
+    pt_shader.setUniform("primitives[9].type", 1);
+    pt_shader.setUniform("primitives[9].leftCornerPoint",
+                         glm::vec3(240, 0, 272));
+    pt_shader.setUniform("primitives[9].right", glm::vec3(0, 165, 0));
+    pt_shader.setUniform("primitives[9].up", glm::vec3(-158, 0, -47));
+    pt_shader.setUniform("primitives[9].brdf_type", 2);
+    pt_shader.setUniform("primitives[9].kd", white1);
+    pt_shader.setUniform("primitives[9].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[10].id", 10);
+    pt_shader.setUniform("primitives[10].type", 1);
+    pt_shader.setUniform("primitives[10].leftCornerPoint",
+                         glm::vec3(423, 330, 247));
+    pt_shader.setUniform("primitives[10].right", glm::vec3(-158, 0, 49));
+    pt_shader.setUniform("primitives[10].up", glm::vec3(49, 0, 159));
+    pt_shader.setUniform("primitives[10].brdf_type", 0);
+    pt_shader.setUniform("primitives[10].kd", white1);
+    pt_shader.setUniform("primitives[10].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[11].id", 11);
+    pt_shader.setUniform("primitives[11].type", 1);
+    pt_shader.setUniform("primitives[11].leftCornerPoint",
+                         glm::vec3(423, 0, 247));
+    pt_shader.setUniform("primitives[11].right", glm::vec3(0, 330, 0));
+    pt_shader.setUniform("primitives[11].up", glm::vec3(49, 0, 159));
+    pt_shader.setUniform("primitives[11].brdf_type", 0);
+    pt_shader.setUniform("primitives[11].kd", white1);
+    pt_shader.setUniform("primitives[11].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[12].id", 12);
+    pt_shader.setUniform("primitives[12].type", 1);
+    pt_shader.setUniform("primitives[12].leftCornerPoint",
+                         glm::vec3(472, 0, 406));
+    pt_shader.setUniform("primitives[12].right", glm::vec3(0, 330, 0));
+    pt_shader.setUniform("primitives[12].up", glm::vec3(-158, 0, 50));
+    pt_shader.setUniform("primitives[12].brdf_type", 0);
+    pt_shader.setUniform("primitives[12].kd", white1);
+    pt_shader.setUniform("primitives[12].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[13].id", 13);
+    pt_shader.setUniform("primitives[13].type", 1);
+    pt_shader.setUniform("primitives[13].leftCornerPoint",
+                         glm::vec3(314, 0, 456));
+    pt_shader.setUniform("primitives[13].right", glm::vec3(0, 330, 0));
+    pt_shader.setUniform("primitives[13].up", glm::vec3(-49, 0, -160));
+    pt_shader.setUniform("primitives[13].brdf_type", 0);
+    pt_shader.setUniform("primitives[13].kd", white1);
+    pt_shader.setUniform("primitives[13].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[14].id", 14);
+    pt_shader.setUniform("primitives[14].type", 1);
+    pt_shader.setUniform("primitives[14].leftCornerPoint",
+                         glm::vec3(265, 0, 296));
+    pt_shader.setUniform("primitives[14].right", glm::vec3(0, 330, 0));
+    pt_shader.setUniform("primitives[14].up", glm::vec3(158, 0, -49));
+    pt_shader.setUniform("primitives[14].brdf_type", 0);
+    pt_shader.setUniform("primitives[14].kd", white1);
+    pt_shader.setUniform("primitives[14].le", glm::vec3(0));
+
+    pt_shader.setUniform("primitives[15].id", 15);
+    pt_shader.setUniform("primitives[15].type", 1);
+    pt_shader.setUniform("primitives[15].leftCornerPoint",
+                         glm::vec3(343, 548.6, 227));
+    pt_shader.setUniform("primitives[15].right", glm::vec3(-130, 0, 0));
+    pt_shader.setUniform("primitives[15].up", glm::vec3(0, 0, 105));
+    pt_shader.setUniform("primitives[15].brdf_type", 0);
+    pt_shader.setUniform("primitives[15].kd", white1);
+    pt_shader.setUniform("primitives[15].le", light);
+  }
 
  public:
   Renderer(unsigned int width, unsigned int height)
@@ -69,11 +234,14 @@ class Renderer {
 
     // set uniforms
     pt_shader.setUniform("resolution", resolution);
+    pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
     pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
     pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
 
-    output_shader.setUniform("resolution", resolution);
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
+
+    // setup scene
+    setCornellBoxScene();
   }
 
   void render() {
@@ -86,7 +254,7 @@ class Renderer {
     samples++;
 
     // output
-    output_shader.setUniform("samples", samples);
+    output_shader.setUniform("samplesInv", 1.0f / samples);
     rectangle.draw(output_shader);
   }
 
@@ -104,6 +272,35 @@ class Renderer {
 
     // reset samples
     samples = 0;
+  }
+
+  void resize(unsigned int width, unsigned int height) {
+    // update resolution
+    resolution = glm::uvec2(width, height);
+    pt_shader.setUniform("resolution", resolution);
+    pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
+    output_shader.setUniform("resolution", resolution);
+
+    // resize textures
+    glBindTexture(GL_TEXTURE_2D, accumTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB,
+                 GL_FLOAT, 0);
+
+    glBindTexture(GL_TEXTURE_2D, stateTexture);
+    std::vector<uint32_t> seed(width * height);
+    std::random_device rnd_dev;
+    std::mt19937 mt(rnd_dev());
+    std::uniform_int_distribution<uint32_t> dist(
+        1, std::numeric_limits<uint32_t>::max());
+    for (int i = 0; i < seed.size(); ++i) {
+      seed[i] = dist(mt);
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER,
+                 GL_UNSIGNED_INT, seed.data());
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // clear textures
+    clear();
   }
 };
 

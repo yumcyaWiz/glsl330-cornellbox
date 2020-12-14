@@ -11,9 +11,6 @@
 #include "renderer.h"
 #include "shader.h"
 
-const int width = 1024;
-const int height = 1024;
-
 std::unique_ptr<Renderer> renderer;
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action,
@@ -25,7 +22,15 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action,
   }
 }
 
+void resizeCallback(GLFWwindow* window, int width, int height) {
+  glViewport(0, 0, width, height);
+}
+
 int main() {
+  // default width, height
+  const int width = 512;
+  const int height = 512;
+
   // init glfw
   if (!glfwInit()) {
     std::cerr << "failed to initialize GLFW" << std::endl;
@@ -56,18 +61,19 @@ int main() {
     std::exit(EXIT_FAILURE);
   }
 
-  // set glfw key callback
+  // set glfw callbacks
   glfwSetKeyCallback(window, keyCallback);
+  glfwSetWindowSizeCallback(window, resizeCallback);
 
   // setup renderer
   renderer = std::make_unique<Renderer>(width, height);
+  glViewport(0, 0, width, height);
 
   // main app loop
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 
     glClear(GL_COLOR_BUFFER_BIT);
-    glViewport(0, 0, width, height);
 
     renderer->render();
 

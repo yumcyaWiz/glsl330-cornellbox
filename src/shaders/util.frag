@@ -1,5 +1,5 @@
 float atan2(in float y, in float x) {
-    return x == 0.0 ? sign(y) * PI / 2.0 : atan(y, x);
+    return x == 0.0 ? sign(y) * 0.5 * PI  : atan(y, x);
 }
 
 vec3 worldToLocal(in vec3 v, in vec3 lx, in vec3 ly, in vec3 lz) {

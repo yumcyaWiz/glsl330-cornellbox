@@ -63,7 +63,7 @@ void main() {
     setSeed(texUV);
 
     // generate initial ray
-    vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) / resolution;
+    vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) * vec2(resolutionYInv);
     uv.y = -uv.y;
     Ray ray = rayGen(uv);
 

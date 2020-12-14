@@ -69,6 +69,7 @@ class Renderer {
 
     // set uniforms
     pt_shader.setUniform("resolution", resolution);
+    pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
     pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
     pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
 
@@ -110,6 +111,7 @@ class Renderer {
     // update resolution
     resolution = glm::uvec2(width, height);
     pt_shader.setUniform("resolution", resolution);
+    pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
     output_shader.setUniform("resolution", resolution);
 
     // resize textures

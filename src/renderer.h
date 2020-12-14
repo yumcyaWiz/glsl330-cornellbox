@@ -83,7 +83,7 @@ class Renderer {
                          glm::vec3(130, 165, 65));
     pt_shader.setUniform("primitives[5].right", glm::vec3(-48, 0, 160));
     pt_shader.setUniform("primitives[5].up", glm::vec3(160, 0, 49));
-    pt_shader.setUniform("primitives[5].brdf_type", 0);
+    pt_shader.setUniform("primitives[5].brdf_type", 2);
     pt_shader.setUniform("primitives[5].kd", white1);
     pt_shader.setUniform("primitives[5].le", glm::vec3(0));
 
@@ -93,7 +93,7 @@ class Renderer {
                          glm::vec3(290, 0, 114));
     pt_shader.setUniform("primitives[6].right", glm::vec3(0, 165, 0));
     pt_shader.setUniform("primitives[6].up", glm::vec3(-50, 0, 158));
-    pt_shader.setUniform("primitives[6].brdf_type", 0);
+    pt_shader.setUniform("primitives[6].brdf_type", 2);
     pt_shader.setUniform("primitives[6].kd", white1);
     pt_shader.setUniform("primitives[6].le", glm::vec3(0));
 
@@ -103,7 +103,7 @@ class Renderer {
                          glm::vec3(130, 0, 65));
     pt_shader.setUniform("primitives[7].right", glm::vec3(0, 165, 0));
     pt_shader.setUniform("primitives[7].up", glm::vec3(160, 0, 49));
-    pt_shader.setUniform("primitives[7].brdf_type", 0);
+    pt_shader.setUniform("primitives[7].brdf_type", 2);
     pt_shader.setUniform("primitives[7].kd", white1);
     pt_shader.setUniform("primitives[7].le", glm::vec3(0));
 
@@ -113,7 +113,7 @@ class Renderer {
                          glm::vec3(82, 0, 225));
     pt_shader.setUniform("primitives[8].right", glm::vec3(0, 165, 0));
     pt_shader.setUniform("primitives[8].up", glm::vec3(48, 0, -160));
-    pt_shader.setUniform("primitives[8].brdf_type", 0);
+    pt_shader.setUniform("primitives[8].brdf_type", 2);
     pt_shader.setUniform("primitives[8].kd", white1);
     pt_shader.setUniform("primitives[8].le", glm::vec3(0));
 
@@ -123,7 +123,7 @@ class Renderer {
                          glm::vec3(240, 0, 272));
     pt_shader.setUniform("primitives[9].right", glm::vec3(0, 165, 0));
     pt_shader.setUniform("primitives[9].up", glm::vec3(-158, 0, -47));
-    pt_shader.setUniform("primitives[9].brdf_type", 0);
+    pt_shader.setUniform("primitives[9].brdf_type", 2);
     pt_shader.setUniform("primitives[9].kd", white1);
     pt_shader.setUniform("primitives[9].le", glm::vec3(0));
 

@@ -78,7 +78,6 @@ class Renderer {
 
   void render() {
     // path tracing
-    pt_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     pt_shader.setUniform("samples", samples);
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
     rectangle.draw(pt_shader);
@@ -88,7 +87,6 @@ class Renderer {
     samples++;
 
     // output
-    output_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     output_shader.setUniform("samples", samples);
     rectangle.draw(output_shader);
   }

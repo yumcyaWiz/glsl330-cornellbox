@@ -1,7 +1,6 @@
 #version 330 core
 
 uniform uint samples;
-uniform uvec2 resolution;
 uniform sampler2D accumTexture;
 
 in vec2 texCoord;

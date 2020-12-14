@@ -73,7 +73,6 @@ class Renderer {
     pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
     pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
 
-    output_shader.setUniform("resolution", resolution);
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
   }
 

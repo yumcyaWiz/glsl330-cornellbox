@@ -47,7 +47,7 @@ class Renderer {
     std::mt19937 mt(rnd_dev());
     std::uniform_int_distribution<uint32_t> dist(
         1, std::numeric_limits<uint32_t>::max());
-    for (int i = 0; i < seed.size(); ++i) {
+    for (unsigned int i = 0; i < seed.size(); ++i) {
       seed[i] = dist(mt);
     }
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER,

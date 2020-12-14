@@ -16,8 +16,8 @@ const int height = 1024;
 
 std::unique_ptr<Renderer> renderer;
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action,
-                 int mods) {
+void keyCallback(GLFWwindow* window, int key, [[maybe_unused]] int scancode,
+                 int action, [[maybe_unused]] int mods) {
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, GLFW_TRUE);
   } else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
@@ -32,7 +32,7 @@ int main() {
   }
 
   // set glfw error callback
-  glfwSetErrorCallback([](int error, const char* description) {
+  glfwSetErrorCallback([]([[maybe_unused]] int error, const char* description) {
     std::cerr << "Error: " << description << std::endl;
     std::exit(EXIT_FAILURE);
   });

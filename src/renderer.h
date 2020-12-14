@@ -25,7 +25,6 @@ class Renderer {
 
   void setCornellBoxScene() {
     const auto white1 = glm::vec3(0.8);
-    const auto white2 = glm::vec3(0.99);
     const auto red = glm::vec3(0.8, 0.05, 0.05);
     const auto green = glm::vec3(0.05, 0.8, 0.05);
     const auto light = glm::vec3(34, 19, 10);
@@ -292,7 +291,7 @@ class Renderer {
     std::mt19937 mt(rnd_dev());
     std::uniform_int_distribution<uint32_t> dist(
         1, std::numeric_limits<uint32_t>::max());
-    for (int i = 0; i < seed.size(); ++i) {
+    for (unsigned int i = 0; i < seed.size(); ++i) {
       seed[i] = dist(mt);
     }
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER,

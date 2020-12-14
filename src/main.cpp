@@ -22,7 +22,8 @@ void keyCallback(GLFWwindow* window, int key, [[maybe_unused]] int scancode,
   }
 }
 
-void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+void framebufferSizeCallback([[maybe_unused]] GLFWwindow* window, int width,
+                             int height) {
   glViewport(0, 0, width, height);
   renderer->resize(width, height);
 }

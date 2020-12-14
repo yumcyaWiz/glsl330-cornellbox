@@ -86,7 +86,7 @@ class Renderer {
     samples++;
 
     // output
-    output_shader.setUniform("samples", samples);
+    output_shader.setUniform("samplesInv", 1.0f / samples);
     rectangle.draw(output_shader);
   }
 

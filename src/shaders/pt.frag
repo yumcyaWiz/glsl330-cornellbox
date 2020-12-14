@@ -8,6 +8,7 @@
 #include intersect.frag
 #include closest_hit.frag
 #include sampling.frag
+#include brdf.frag
 
 in vec2 texCoord;
 
@@ -30,25 +31,27 @@ vec3 computeRadiance(in Ray ray_in) {
         IntersectInfo info;
         if(intersect(ray, info)) {
             Primitive hitPrimitive = primitives[info.primID];
+            vec3 wo = -ray.direction;
+            vec3 wo_local = worldToLocal(wo, info.dpdu, info.hitNormal, info.dpdv);
 
             // Le 
             color += throughput * hitPrimitive.le;
 
             // BRDF Sampling
-            float pdf_solid;
-            vec3 next_direction_local = sampleCosineHemisphere(random(), random(), pdf_solid);
+            float pdf;
+            vec3 wi_local = sampleBRDF(wo_local, 0, pdf);
             // prevent NaN
-            if(pdf_solid == 0.0) {
+            if(pdf == 0.0) {
                 break;
             }
-            vec3 next_direction = localToWorld(next_direction_local, info.dpdu, info.hitNormal, info.dpdv);
+            vec3 wi = localToWorld(wi_local, info.dpdu, info.hitNormal, info.dpdv);
 
             // update throughput
-            vec3 BRDF = hitPrimitive.kd * PI_INV;
-            float cos_term = abs(dot(next_direction, info.hitNormal));
-            throughput *= BRDF * cos_term / pdf_solid;
+            vec3 brdf = BRDF(wo_local, wi_local, 0, hitPrimitive.kd);
+            float cos_term = abs(wi_local.y);
+            throughput *= brdf * cos_term / pdf;
 
-            ray = Ray(info.hitPos, next_direction);
+            ray = Ray(info.hitPos, wi);
         }
         else {
             color += throughput * vec3(0);

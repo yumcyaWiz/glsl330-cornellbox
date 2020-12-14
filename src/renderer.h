@@ -11,8 +11,7 @@
 
 class Renderer {
  private:
-  unsigned int width;
-  unsigned int height;
+  const glm::uvec2 resolution;
   unsigned int samples;
 
   GLuint accumTexture;
@@ -26,8 +25,7 @@ class Renderer {
 
  public:
   Renderer(unsigned int width, unsigned int height)
-      : width(width),
-        height(height),
+      : resolution({width, height}),
         samples(0),
         rectangle(),
         pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
@@ -71,8 +69,6 @@ class Renderer {
   }
 
   void render() {
-    const glm::uvec2 resolution = glm::uvec2(width, height);
-
     // path tracing
     pt_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     pt_shader.setUniform("samples", samples);
@@ -97,9 +93,9 @@ class Renderer {
   void clear() {
     // clear accumTexture
     glBindTexture(GL_TEXTURE_2D, accumTexture);
-    std::vector<GLfloat> data(3 * width * height);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_FLOAT,
-                    data.data());
+    std::vector<GLfloat> data(3 * resolution[0] * resolution[1]);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, resolution[0], resolution[1],
+                    GL_RGB, GL_FLOAT, data.data());
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // reset samples

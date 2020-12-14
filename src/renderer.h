@@ -11,7 +11,7 @@
 
 class Renderer {
  private:
-  const glm::uvec2 resolution;
+  glm::uvec2 resolution;
   unsigned int samples;
 
   GLuint accumTexture;
@@ -104,6 +104,34 @@ class Renderer {
 
     // reset samples
     samples = 0;
+  }
+
+  void resize(unsigned int width, unsigned int height) {
+    // update resolution
+    resolution = glm::uvec2(width, height);
+    pt_shader.setUniform("resolution", resolution);
+    output_shader.setUniform("resolution", resolution);
+
+    // resize textures
+    glBindTexture(GL_TEXTURE_2D, accumTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB,
+                 GL_FLOAT, 0);
+
+    glBindTexture(GL_TEXTURE_2D, stateTexture);
+    std::vector<uint32_t> seed(width * height);
+    std::random_device rnd_dev;
+    std::mt19937 mt(rnd_dev());
+    std::uniform_int_distribution<uint32_t> dist(
+        1, std::numeric_limits<uint32_t>::max());
+    for (int i = 0; i < seed.size(); ++i) {
+      seed[i] = dist(mt);
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER,
+                 GL_UNSIGNED_INT, seed.data());
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // clear textures
+    clear();
   }
 };
 

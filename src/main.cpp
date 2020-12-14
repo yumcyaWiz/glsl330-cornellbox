@@ -22,14 +22,15 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action,
   }
 }
 
-void resizeCallback(GLFWwindow* window, int width, int height) {
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
+  renderer->resize(width, height);
 }
 
 int main() {
   // default width, height
-  const int width = 512;
-  const int height = 512;
+  const int width = 1024;
+  const int height = 1024;
 
   // init glfw
   if (!glfwInit()) {
@@ -63,10 +64,11 @@ int main() {
 
   // set glfw callbacks
   glfwSetKeyCallback(window, keyCallback);
-  glfwSetWindowSizeCallback(window, resizeCallback);
+  glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
   // setup renderer
   renderer = std::make_unique<Renderer>(width, height);
+
   glViewport(0, 0, width, height);
 
   // main app loop

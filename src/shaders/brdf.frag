@@ -20,19 +20,21 @@ vec3 BRDF(in vec3 wo, in vec3 wi, in int brdf_type, in vec3 kd) {
     }
 }
 
-vec3 sampleBRDF(in vec3 wo, in int brdf_type, out float pdf) {
+vec3 sampleBRDF(in vec3 wo, out vec3 wi, in int brdf_type, in vec3 kd, out float pdf) {
     switch(brdf_type) {
-        // lambert
-        case 0:
-        return sampleCosineHemisphere(random(), random(), pdf);
+    // lambert
+    case 0:
+        wi = sampleCosineHemisphere(random(), random(), pdf);
+        return kd * PI_INV;
 
-        // mirror
-        case 1:
+    // mirror
+    case 1:
         pdf = 1.0;
-        return reflect(-wo, vec3(0, 1, 0));
+        wi = reflect(-wo, vec3(0, 1, 0));
+        return kd / abs(wi.y);
 
-        // glass
-        case 2:
+    // glass
+    case 2:
         pdf = 1.0;
 
         // set appropriate normal and ior
@@ -50,18 +52,18 @@ vec3 sampleBRDF(in vec3 wo, in int brdf_type, out float pdf) {
         float fr = fresnel(wo, ior1, ior2);
 
         // reflection
-        vec3 ret;
         if(random() < fr) {
-            ret = reflect(-wo, n);
+            wi = reflect(-wo, n);
         }
         // refract
         else {
-            ret = refract(-wo, n, eta);
+            wi = refract(-wo, n, eta);
             // total reflection
-            if(ret == vec3(0)) {
-                ret = reflect(-wo, n);
+            if(wi == vec3(0)) {
+                wi = reflect(-wo, n);
             }
         }
-        return ret;
+
+        return kd / abs(wi.y);
     }
 }

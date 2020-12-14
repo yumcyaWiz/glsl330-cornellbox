@@ -42,7 +42,8 @@ vec3 computeRadiance(in Ray ray_in) {
 
             // BRDF Sampling
             float pdf;
-            vec3 wi_local = sampleBRDF(wo_local, hitPrimitive.brdf_type, pdf);
+            vec3 wi_local;
+            vec3 brdf = sampleBRDF(wo_local, wi_local, hitPrimitive.brdf_type, hitPrimitive.kd, pdf);
             // prevent NaN
             if(pdf == 0.0) {
                 break;
@@ -50,7 +51,6 @@ vec3 computeRadiance(in Ray ray_in) {
             vec3 wi = localToWorld(wi_local, info.dpdu, info.hitNormal, info.dpdv);
 
             // update throughput
-            vec3 brdf = BRDF(wo_local, wi_local, hitPrimitive.brdf_type, hitPrimitive.kd);
             float cos_term = abs(wi_local.y);
             throughput *= brdf * cos_term / pdf;
 

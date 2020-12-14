@@ -7,3 +7,6 @@
 [submodule "external/GLSL-Shader-Includes"]
 	path = external/GLSL-Shader-Includes
 	url = git@github.com:tntmeijs/GLSL-Shader-Includes.git
+[submodule "external/imgui"]
+	path = external/imgui
+	url = git@github.com:ocornut/imgui.git

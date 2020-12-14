@@ -66,15 +66,20 @@ class Renderer {
     GLuint attachments[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
     glDrawBuffers(2, attachments);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // set uniforms
+    pt_shader.setUniform("resolution", resolution);
+    pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
+    pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
+
+    output_shader.setUniform("resolution", resolution);
+    output_shader.setUniformTexture("accumTexture", accumTexture, 0);
   }
 
   void render() {
     // path tracing
     pt_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     pt_shader.setUniform("samples", samples);
-    pt_shader.setUniform("resolution", resolution);
-    pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
-    pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
     rectangle.draw(pt_shader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -85,8 +90,6 @@ class Renderer {
     // output
     output_shader.setUniform("time", static_cast<float>(glfwGetTime()));
     output_shader.setUniform("samples", samples);
-    output_shader.setUniform("resolution", resolution);
-    output_shader.setUniformTexture("accumTexture", accumTexture, 0);
     rectangle.draw(output_shader);
   }
 
@@ -97,6 +100,10 @@ class Renderer {
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, resolution[0], resolution[1],
                     GL_RGB, GL_FLOAT, data.data());
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    // update texture uniforms
+    pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
+    output_shader.setUniformTexture("accumTexture", accumTexture, 0);
 
     // reset samples
     samples = 0;

@@ -1,10 +1,10 @@
 bool intersect_each(in Ray ray, in Primitive primitive, out IntersectInfo info) {
+    switch(primitive.type) {
     // Sphere
-    if(primitive.type == 0) {
+    case 0:
         return intersectSphere(primitive.center, primitive.radius, ray, info);
-    }
     // Plane
-    else if(primitive.type == 1) {
+    case 1:
         return intersectPlane(primitive.leftCornerPoint, primitive.right, primitive.up, ray, info);
     }
 }

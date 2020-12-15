@@ -26,12 +26,6 @@ void keyCallback(GLFWwindow* window, int key, [[maybe_unused]] int scancode,
   }
 }
 
-void framebufferSizeCallback([[maybe_unused]] GLFWwindow* window, int width,
-                             int height) {
-  glViewport(0, 0, width, height);
-  renderer->resize(width, height);
-}
-
 int main() {
   // default width, height
   const int width = 512;
@@ -69,7 +63,6 @@ int main() {
 
   // set glfw callbacks
   glfwSetKeyCallback(window, keyCallback);
-  glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
   // setup Dear ImGui context
   IMGUI_CHECKVERSION();
@@ -86,8 +79,6 @@ int main() {
 
   // setup renderer
   renderer = std::make_unique<Renderer>(width, height);
-
-  glViewport(0, 0, width, height);
 
   // main app loop
   while (!glfwWindowShouldClose(window)) {
@@ -123,9 +114,13 @@ int main() {
 
     // Rendering
     glClear(GL_COLOR_BUFFER_BIT);
+
     renderer->render();
 
     // ImGui Rendering
+    int display_w, display_h;
+    glfwGetFramebufferSize(window, &display_w, &display_h);
+    glViewport(0, 0, display_w, display_h);
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

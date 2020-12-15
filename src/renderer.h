@@ -92,6 +92,7 @@ class Renderer {
     pt_shader.setUniform("camRight", camera.camRight);
     pt_shader.setUniform("camUp", camera.camUp);
 
+    glViewport(0, 0, resolution.x, resolution.y);
     rectangle.draw(pt_shader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

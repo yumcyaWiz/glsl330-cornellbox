@@ -5,6 +5,7 @@
 #include <random>
 #include <vector>
 
+#include "camera.h"
 #include "glad/glad.h"
 #include "rectangle.h"
 #include "shader.h"
@@ -13,10 +14,7 @@ class Renderer {
  public:
   unsigned int samples;
 
-  glm::vec3 camPos;
-  glm::vec3 camForward;
-  glm::vec3 camRight;
-  glm::vec3 camUp;
+  Camera camera;
 
  private:
   glm::uvec2 resolution;
@@ -33,10 +31,6 @@ class Renderer {
  public:
   Renderer(unsigned int width, unsigned int height)
       : samples(0),
-        camPos({278, 273, -900}),
-        camForward({0, 0, 1}),
-        camRight({1, 0, 0}),
-        camUp({0, 1, 0}),
         resolution({width, height}),
         rectangle(),
         pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
@@ -93,10 +87,10 @@ class Renderer {
   void render() {
     // path tracing
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
-    pt_shader.setUniform("camPos", camPos);
-    pt_shader.setUniform("camForward", camForward);
-    pt_shader.setUniform("camRight", camRight);
-    pt_shader.setUniform("camUp", camUp);
+    pt_shader.setUniform("camPos", camera.camPos);
+    pt_shader.setUniform("camForward", camera.camForward);
+    pt_shader.setUniform("camRight", camera.camRight);
+    pt_shader.setUniform("camUp", camera.camUp);
 
     rectangle.draw(pt_shader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

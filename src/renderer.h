@@ -85,6 +85,8 @@ class Renderer {
   unsigned int getHeight() const { return resolution.y; }
   unsigned int getSamples() const { return samples; }
 
+  glm::vec3 getCameraPosition() const { return camera.camPos; }
+
   void render() {
     // path tracing
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);

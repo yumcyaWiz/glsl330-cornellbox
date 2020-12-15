@@ -89,7 +89,7 @@ int main() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::Begin("Render");
+    ImGui::Begin("Renderer");
     {
       static int resolution[2] = {static_cast<int>(renderer->getWidth()),
                                   static_cast<int>(renderer->getHeight())};
@@ -98,6 +98,10 @@ int main() {
       }
 
       ImGui::Text("Samples: %d", renderer->getSamples());
+
+      glm::vec3 camPos = renderer->getCameraPosition();
+      ImGui::Text("Camera Position: (%.3f, %.3f, %.3f)", camPos.x, camPos.y,
+                  camPos.z);
     }
     ImGui::End();
 

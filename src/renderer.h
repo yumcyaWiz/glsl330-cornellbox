@@ -10,14 +10,16 @@
 #include "shader.h"
 
 class Renderer {
- private:
-  glm::uvec2 resolution;
+ public:
   unsigned int samples;
 
   glm::vec3 camPos;
   glm::vec3 camForward;
   glm::vec3 camRight;
   glm::vec3 camUp;
+
+ private:
+  glm::uvec2 resolution;
 
   GLuint accumTexture;
   GLuint stateTexture;
@@ -28,6 +30,131 @@ class Renderer {
   Shader pt_shader;
   Shader output_shader;
 
+ public:
+  Renderer(unsigned int width, unsigned int height)
+      : samples(0),
+        camPos({278, 273, -900}),
+        camForward({0, 0, 1}),
+        camRight({1, 0, 0}),
+        camUp({0, 1, 0}),
+        resolution({width, height}),
+        rectangle(),
+        pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
+        output_shader({"./shaders/pt.vert", "./shaders/output.frag"}) {
+    // setup accumulate texture
+    glGenTextures(1, &accumTexture);
+    glBindTexture(GL_TEXTURE_2D, accumTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB,
+                 GL_FLOAT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // setup RNG state texture
+    glGenTextures(1, &stateTexture);
+    glBindTexture(GL_TEXTURE_2D, stateTexture);
+    std::vector<uint32_t> seed(width * height);
+    std::random_device rnd_dev;
+    std::mt19937 mt(rnd_dev());
+    std::uniform_int_distribution<uint32_t> dist(
+        1, std::numeric_limits<uint32_t>::max());
+    for (unsigned int i = 0; i < seed.size(); ++i) {
+      seed[i] = dist(mt);
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER,
+                 GL_UNSIGNED_INT, seed.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // setup accumulate FBO
+    glGenFramebuffers(1, &accumFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                           accumTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D,
+                           stateTexture, 0);
+    GLuint attachments[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+    glDrawBuffers(2, attachments);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // set uniforms
+    pt_shader.setUniform("resolution", resolution);
+    pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
+    pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
+    pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
+
+    output_shader.setUniformTexture("accumTexture", accumTexture, 0);
+
+    // setup scene
+    setCornellBoxScene();
+  }
+
+  void render() {
+    // path tracing
+    glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
+    pt_shader.setUniform("camPos", camPos);
+    pt_shader.setUniform("camForward", camForward);
+    pt_shader.setUniform("camRight", camRight);
+    pt_shader.setUniform("camUp", camUp);
+
+    rectangle.draw(pt_shader);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // update samples
+    samples++;
+
+    // output
+    output_shader.setUniform("samplesInv", 1.0f / samples);
+    rectangle.draw(output_shader);
+  }
+
+  void clear() {
+    // clear accumTexture
+    glBindTexture(GL_TEXTURE_2D, accumTexture);
+    std::vector<GLfloat> data(3 * resolution.x * resolution.y);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, resolution.x, resolution.y, GL_RGB,
+                    GL_FLOAT, data.data());
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // update texture uniforms
+    pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
+    output_shader.setUniformTexture("accumTexture", accumTexture, 0);
+
+    // reset samples
+    samples = 0;
+  }
+
+  void resize(unsigned int width, unsigned int height) {
+    // update resolution
+    resolution = glm::uvec2(width, height);
+    pt_shader.setUniform("resolution", resolution);
+    pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
+    output_shader.setUniform("resolution", resolution);
+
+    // resize textures
+    glBindTexture(GL_TEXTURE_2D, accumTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB,
+                 GL_FLOAT, 0);
+
+    glBindTexture(GL_TEXTURE_2D, stateTexture);
+    std::vector<uint32_t> seed(width * height);
+    std::random_device rnd_dev;
+    std::mt19937 mt(rnd_dev());
+    std::uniform_int_distribution<uint32_t> dist(
+        1, std::numeric_limits<uint32_t>::max());
+    for (unsigned int i = 0; i < seed.size(); ++i) {
+      seed[i] = dist(mt);
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER,
+                 GL_UNSIGNED_INT, seed.data());
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // clear textures
+    clear();
+  }
+
+ private:
   void setCornellBoxScene() {
     const auto white1 = glm::vec3(0.8);
     const auto red = glm::vec3(0.8, 0.05, 0.05);
@@ -190,132 +317,6 @@ class Renderer {
     pt_shader.setUniform("primitives[15].brdf_type", 0);
     pt_shader.setUniform("primitives[15].kd", white1);
     pt_shader.setUniform("primitives[15].le", light);
-  }
-
- public:
-  Renderer(unsigned int width, unsigned int height)
-      : resolution({width, height}),
-        samples(0),
-        camPos({278, 273, -900}),
-        camForward({0, 0, 1}),
-        camRight({1, 0, 0}),
-        camUp({0, 1, 0}),
-        rectangle(),
-        pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
-        output_shader({"./shaders/pt.vert", "./shaders/output.frag"}) {
-    // setup accumulate texture
-    glGenTextures(1, &accumTexture);
-    glBindTexture(GL_TEXTURE_2D, accumTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB,
-                 GL_FLOAT, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    // setup RNG state texture
-    glGenTextures(1, &stateTexture);
-    glBindTexture(GL_TEXTURE_2D, stateTexture);
-    std::vector<uint32_t> seed(width * height);
-    std::random_device rnd_dev;
-    std::mt19937 mt(rnd_dev());
-    std::uniform_int_distribution<uint32_t> dist(
-        1, std::numeric_limits<uint32_t>::max());
-    for (unsigned int i = 0; i < seed.size(); ++i) {
-      seed[i] = dist(mt);
-    }
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER,
-                 GL_UNSIGNED_INT, seed.data());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    // setup accumulate FBO
-    glGenFramebuffers(1, &accumFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                           accumTexture, 0);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D,
-                           stateTexture, 0);
-    GLuint attachments[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-    glDrawBuffers(2, attachments);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    // set uniforms
-    pt_shader.setUniform("resolution", resolution);
-    pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
-    pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
-    pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
-
-    output_shader.setUniformTexture("accumTexture", accumTexture, 0);
-
-    // setup scene
-    setCornellBoxScene();
-  }
-
-  unsigned int getSamples() const { return samples; }
-
-  void render() {
-    // path tracing
-    glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
-    pt_shader.setUniform("camPos", camPos);
-    pt_shader.setUniform("camForward", camForward);
-    pt_shader.setUniform("camRight", camRight);
-    pt_shader.setUniform("camUp", camUp);
-
-    rectangle.draw(pt_shader);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    // update samples
-    samples++;
-
-    // output
-    output_shader.setUniform("samplesInv", 1.0f / samples);
-    rectangle.draw(output_shader);
-  }
-
-  void clear() {
-    // clear accumTexture
-    glBindTexture(GL_TEXTURE_2D, accumTexture);
-    std::vector<GLfloat> data(3 * resolution.x * resolution.y);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, resolution.x, resolution.y, GL_RGB,
-                    GL_FLOAT, data.data());
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    // update texture uniforms
-    pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
-    output_shader.setUniformTexture("accumTexture", accumTexture, 0);
-
-    // reset samples
-    samples = 0;
-  }
-
-  void resize(unsigned int width, unsigned int height) {
-    // update resolution
-    resolution = glm::uvec2(width, height);
-    pt_shader.setUniform("resolution", resolution);
-    pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
-    output_shader.setUniform("resolution", resolution);
-
-    // resize textures
-    glBindTexture(GL_TEXTURE_2D, accumTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB,
-                 GL_FLOAT, 0);
-
-    glBindTexture(GL_TEXTURE_2D, stateTexture);
-    std::vector<uint32_t> seed(width * height);
-    std::random_device rnd_dev;
-    std::mt19937 mt(rnd_dev());
-    std::uniform_int_distribution<uint32_t> dist(
-        1, std::numeric_limits<uint32_t>::max());
-    for (unsigned int i = 0; i < seed.size(); ++i) {
-      seed[i] = dist(mt);
-    }
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER,
-                 GL_UNSIGNED_INT, seed.data());
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    // clear textures
-    clear();
   }
 };
 

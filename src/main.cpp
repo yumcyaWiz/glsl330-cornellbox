@@ -99,7 +99,7 @@ int main() {
     ImGui::NewFrame();
 
     ImGui::Begin("Render");
-    ImGui::Text("Samples: %d", renderer->getSamples());
+    ImGui::Text("Samples: %d", renderer->samples);
     ImGui::End();
 
     // ImGui::Begin("Camera");

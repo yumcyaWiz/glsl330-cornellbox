@@ -93,25 +93,6 @@ int main() {
     ImGui::Text("Samples: %d", renderer->samples);
     ImGui::End();
 
-    ImGui::Begin("Camera");
-    if (ImGui::InputFloat3("Camera Position",
-                           glm::value_ptr(renderer->camera.camPos))) {
-      renderer->clear();
-    }
-    if (ImGui::InputFloat3("Camera Forward",
-                           glm::value_ptr(renderer->camera.camForward))) {
-      renderer->clear();
-    }
-    if (ImGui::InputFloat3("Camera Right",
-                           glm::value_ptr(renderer->camera.camRight))) {
-      renderer->clear();
-    }
-    if (ImGui::InputFloat3("Camera Up",
-                           glm::value_ptr(renderer->camera.camUp))) {
-      renderer->clear();
-    }
-    ImGui::End();
-
     // Rendering
     glClear(GL_COLOR_BUFFER_BIT);
 

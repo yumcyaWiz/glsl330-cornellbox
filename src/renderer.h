@@ -14,10 +14,9 @@ class Renderer {
  public:
   unsigned int samples;
 
-  Camera camera;
-
  private:
   glm::uvec2 resolution;
+  Camera camera;
 
   GLuint accumTexture;
   GLuint stateTexture;

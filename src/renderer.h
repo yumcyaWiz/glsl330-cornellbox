@@ -243,6 +243,8 @@ class Renderer {
     setCornellBoxScene();
   }
 
+  unsigned int getSamples() const { return samples; }
+
   void render() {
     // path tracing
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);

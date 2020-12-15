@@ -98,8 +98,8 @@ int main() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::Begin("Hello World");
-    ImGui::Text("Hello World");
+    ImGui::Begin("Render");
+    ImGui::Text("Samples: %d", renderer->getSamples());
     ImGui::End();
 
     // Rendering

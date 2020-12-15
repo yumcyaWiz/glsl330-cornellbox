@@ -99,6 +99,7 @@ int main() {
     ImGui::NewFrame();
 
     ImGui::Begin("Hello World");
+    ImGui::Text("Hello World");
     ImGui::End();
 
     // Rendering

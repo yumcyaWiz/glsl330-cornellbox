@@ -20,9 +20,9 @@ add_library(imgui imgui/imgui.cpp imgui/imgui_widgets.cpp imgui/imgui_draw.cpp i
 target_include_directories(imgui SYSTEM PUBLIC imgui)
 
 # imgui impl
-add_library(imgui_impl imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_opengl3.cpp)
+add_library(imgui_impl imgui/examples/imgui_impl_glfw.cpp imgui/examples/imgui_impl_opengl3.cpp)
 target_compile_definitions(imgui_impl PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
 target_link_libraries(imgui_impl imgui)
 target_link_libraries(imgui_impl glfw)
 target_link_libraries(imgui_impl glad)
-target_include_directories(imgui_impl SYSTEM PUBLIC imgui/backends)
+target_include_directories(imgui_impl SYSTEM PUBLIC imgui/examples)

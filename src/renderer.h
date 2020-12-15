@@ -14,6 +14,11 @@ class Renderer {
   glm::uvec2 resolution;
   unsigned int samples;
 
+  glm::vec3 camPos;
+  glm::vec3 camForward;
+  glm::vec3 camRight;
+  glm::vec3 camUp;
+
   GLuint accumTexture;
   GLuint stateTexture;
   GLuint accumFBO;
@@ -191,6 +196,10 @@ class Renderer {
   Renderer(unsigned int width, unsigned int height)
       : resolution({width, height}),
         samples(0),
+        camPos({278, 273, -900}),
+        camForward({0, 0, 1}),
+        camRight({1, 0, 0}),
+        camUp({0, 1, 0}),
         rectangle(),
         pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
         output_shader({"./shaders/pt.vert", "./shaders/output.frag"}) {
@@ -248,6 +257,11 @@ class Renderer {
   void render() {
     // path tracing
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
+    pt_shader.setUniform("camPos", camPos);
+    pt_shader.setUniform("camForward", camForward);
+    pt_shader.setUniform("camRight", camRight);
+    pt_shader.setUniform("camUp", camUp);
+
     rectangle.draw(pt_shader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

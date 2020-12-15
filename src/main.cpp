@@ -102,6 +102,9 @@ int main() {
     ImGui::Text("Samples: %d", renderer->getSamples());
     ImGui::End();
 
+    // ImGui::Begin("Camera");
+    // ImGui::End();
+
     // Rendering
     glClear(GL_COLOR_BUFFER_BIT);
     renderer->render();

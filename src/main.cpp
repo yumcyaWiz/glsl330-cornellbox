@@ -7,6 +7,10 @@
 //
 #include "glm/glm.hpp"
 //
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+//
 #include "rectangle.h"
 #include "renderer.h"
 #include "shader.h"
@@ -30,8 +34,8 @@ void framebufferSizeCallback([[maybe_unused]] GLFWwindow* window, int width,
 
 int main() {
   // default width, height
-  const int width = 1024;
-  const int height = 1024;
+  const int width = 512;
+  const int height = 512;
 
   // init glfw
   if (!glfwInit()) {
@@ -67,6 +71,19 @@ int main() {
   glfwSetKeyCallback(window, keyCallback);
   glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
+  // setup Dear ImGui context
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGuiIO& io = ImGui::GetIO();
+  (void)io;
+
+  // setup Dear ImGui style
+  ImGui::StyleColorsDark();
+
+  // Setup Platform/Renderer backends
+  ImGui_ImplGlfw_InitForOpenGL(window, true);
+  ImGui_ImplOpenGL3_Init("#version 330 core");
+
   // setup renderer
   renderer = std::make_unique<Renderer>(width, height);
 
@@ -76,7 +93,18 @@ int main() {
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 
+    // Start the Dear ImGui frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::Begin("Hello World");
+    ImGui::End();
+
+    // Rendering
+    ImGui::Render();
     glClear(GL_COLOR_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     renderer->render();
 
@@ -84,7 +112,12 @@ int main() {
   }
 
   // exit
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+
   glfwDestroyWindow(window);
   glfwTerminate();
+
   return 0;
 }

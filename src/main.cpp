@@ -103,11 +103,12 @@ int main() {
     ImGui::End();
 
     // Rendering
-    ImGui::Render();
     glClear(GL_COLOR_BUFFER_BIT);
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
     renderer->render();
+
+    // ImGui Rendering
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     glfwSwapBuffers(window);
   }

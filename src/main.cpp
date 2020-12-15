@@ -90,7 +90,15 @@ int main() {
     ImGui::NewFrame();
 
     ImGui::Begin("Render");
-    ImGui::Text("Samples: %d", renderer->getSamples());
+    {
+      static int resolution[2] = {static_cast<int>(renderer->getWidth()),
+                                  static_cast<int>(renderer->getHeight())};
+      if (ImGui::InputInt2("Resolution", resolution)) {
+        renderer->resize(resolution[0], resolution[1]);
+      }
+
+      ImGui::Text("Samples: %d", renderer->getSamples());
+    }
     ImGui::End();
 
     // Rendering

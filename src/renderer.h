@@ -81,6 +81,8 @@ class Renderer {
     setCornellBoxScene();
   }
 
+  unsigned int getWidth() const { return resolution.x; }
+  unsigned int getHeight() const { return resolution.y; }
   unsigned int getSamples() const { return samples; }
 
   void render() {

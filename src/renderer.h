@@ -11,10 +11,8 @@
 #include "shader.h"
 
 class Renderer {
- public:
-  unsigned int samples;
-
  private:
+  unsigned int samples;
   glm::uvec2 resolution;
   Camera camera;
 
@@ -82,6 +80,8 @@ class Renderer {
     // setup scene
     setCornellBoxScene();
   }
+
+  unsigned int getSamples() const { return samples; }
 
   void render() {
     // path tracing

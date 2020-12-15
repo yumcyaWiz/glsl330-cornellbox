@@ -102,6 +102,8 @@ int main() {
       glm::vec3 camPos = renderer->getCameraPosition();
       ImGui::Text("Camera Position: (%.3f, %.3f, %.3f)", camPos.x, camPos.y,
                   camPos.z);
+
+      ImGui::Text("FPS: %.1f", io.Framerate);
     }
     ImGui::End();
 

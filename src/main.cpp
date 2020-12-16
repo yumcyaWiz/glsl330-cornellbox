@@ -17,32 +17,6 @@
 
 std::unique_ptr<Renderer> renderer;
 
-void keyCallback(GLFWwindow* window, int key, [[maybe_unused]] int scancode,
-                 int action, [[maybe_unused]] int mods) {
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-    glfwSetWindowShouldClose(window, GLFW_TRUE);
-  } else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
-    renderer->clear();
-  }
-
-  // Camera Movement
-  /*
-  const float movementSpeed = 10.0f;
-  if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    renderer->moveCamera(movementSpeed * glm::vec3(0, 0, 1.0));
-  }
-  if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    renderer->moveCamera(movementSpeed * glm::vec3(0.0, 0, -1.0));
-  }
-  if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    renderer->moveCamera(movementSpeed * glm::vec3(1.0, 0, 0.0));
-  }
-  if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    renderer->moveCamera(movementSpeed * glm::vec3(-1.0, 0, 0.0));
-  }
-  */
-}
-
 void handleInput(GLFWwindow* window, const ImGuiIO& io) {
   // Close Application
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -104,9 +78,6 @@ int main() {
     std::cerr << "failed to initialize glad" << std::endl;
     std::exit(EXIT_FAILURE);
   }
-
-  // set glfw callbacks
-  glfwSetKeyCallback(window, keyCallback);
 
   // setup Dear ImGui context
   IMGUI_CHECKVERSION();

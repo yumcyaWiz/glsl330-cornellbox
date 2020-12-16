@@ -6,6 +6,7 @@ Render Cornell Box with Path Tracing in GLSL.
 
 * Unidirectional Path Tracing
 * Lambert, Mirror, Glass Material
+* Interactive GUI
 
 ## Requirements
 

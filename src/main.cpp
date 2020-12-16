@@ -24,6 +24,50 @@ void keyCallback(GLFWwindow* window, int key, [[maybe_unused]] int scancode,
   } else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
     renderer->clear();
   }
+
+  // Camera Movement
+  /*
+  const float movementSpeed = 10.0f;
+  if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    renderer->moveCamera(movementSpeed * glm::vec3(0, 0, 1.0));
+  }
+  if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    renderer->moveCamera(movementSpeed * glm::vec3(0.0, 0, -1.0));
+  }
+  if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    renderer->moveCamera(movementSpeed * glm::vec3(1.0, 0, 0.0));
+  }
+  if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    renderer->moveCamera(movementSpeed * glm::vec3(-1.0, 0, 0.0));
+  }
+  */
+}
+
+void handleInput(GLFWwindow* window, const ImGuiIO& io) {
+  // Close Application
+  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+  }
+
+  // Clear Render
+  if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+    renderer->clear();
+  }
+
+  // Camera Movement
+  const float movementSpeed = 100.0f * io.DeltaTime;
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+    renderer->moveCamera(movementSpeed * glm::vec3(0, 0, 1.0));
+  }
+  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+    renderer->moveCamera(movementSpeed * glm::vec3(0, 0, -1.0));
+  }
+  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+    renderer->moveCamera(movementSpeed * glm::vec3(1.0, 0, 0.0));
+  }
+  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+    renderer->moveCamera(movementSpeed * glm::vec3(-1.0, 0, 0.0));
+  }
 }
 
 int main() {
@@ -106,6 +150,9 @@ int main() {
       ImGui::Text("FPS: %.1f", io.Framerate);
     }
     ImGui::End();
+
+    // Handle Input
+    handleInput(window, io);
 
     // Rendering
     glClear(GL_COLOR_BUFFER_BIT);

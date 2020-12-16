@@ -25,6 +25,8 @@ class Renderer {
   Shader pt_shader;
   Shader output_shader;
 
+  bool clear_flag;
+
  public:
   Renderer(unsigned int width, unsigned int height)
       : samples(0),
@@ -87,7 +89,17 @@ class Renderer {
 
   glm::vec3 getCameraPosition() const { return camera.camPos; }
 
+  void moveCamera(const glm::vec3& v) {
+    camera.move(v);
+    clear_flag = true;
+  }
+
   void render() {
+    if (clear_flag) {
+      clear();
+      clear_flag = false;
+    }
+
     // path tracing
     glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
     pt_shader.setUniform("camPos", camera.camPos);

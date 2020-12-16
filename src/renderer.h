@@ -93,6 +93,10 @@ class Renderer {
     camera.move(v);
     clear_flag = true;
   }
+  void orbitCamera(float dTheta, float dPhi) {
+    camera.orbit(dTheta, dPhi);
+    clear_flag = true;
+  }
 
   void render() {
     if (clear_flag) {

@@ -1,14 +1,14 @@
 #version 330 core
 
-#include global.frag
-#include uniform.frag
-#include rng.frag
-#include raygen.frag
-#include util.frag
-#include intersect.frag
-#include closest_hit.frag
-#include sampling.frag
-#include brdf.frag
+#include common/global.frag
+#include common/uniform.frag
+#include common/rng.frag
+#include common/raygen.frag
+#include common/util.frag
+#include common/intersect.frag
+#include common/closest_hit.frag
+#include common/sampling.frag
+#include common/brdf.frag
 
 in vec2 texCoord;
 

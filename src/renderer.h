@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "glad/glad.h"
 #include "rectangle.h"
+#include "scene.h"
 #include "shader.h"
 
 class Renderer {

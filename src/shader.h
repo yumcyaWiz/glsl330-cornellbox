@@ -163,6 +163,11 @@ class Shader {
     deactivate();
   }
 
+  void setUBO(const std::string& block_name, GLuint binding_number) {
+    GLuint index = glGetUniformBlockIndex(program, block_name.c_str());
+    glUniformBlockBinding(program, index, binding_number);
+  }
+
   /*
   void setUniform(const std::string& uniform_name,
                   const std::variant<GLint, GLuint, GLfloat, glm::vec2>& v) {

@@ -26,62 +26,6 @@ class Scene {
     int padding3;   // 48
   };
 
-  std::vector<Primitive> primitives;
-
-  void addPrimitive(const Primitive& primitive) {
-    primitives.push_back(primitive);
-  }
-
-  std::vector<Material> materials;
-
-  void addMaterial(const Material& material) { materials.push_back(material); }
-
-  Primitive createSphere(const glm::vec3& center, float radius) {
-    Primitive ret;
-    ret.type = 0;
-    ret.center = center;
-    ret.radius = radius;
-    return ret;
-  }
-
-  Primitive createPlane(const glm::vec3& leftCornerPoint,
-                        const glm::vec3& right, const glm::vec3& up) {
-    Primitive ret;
-    ret.type = 1;
-    ret.leftCornerPoint = leftCornerPoint;
-    ret.right = right;
-    ret.up = up;
-    return ret;
-  }
-
-  Material createDiffuse(const glm::vec3& kd) {
-    Material ret;
-    ret.brdf_type = 0;
-    ret.kd = kd;
-    return ret;
-  }
-
-  Material createMirror(const glm::vec3& kd) {
-    Material ret;
-    ret.brdf_type = 1;
-    ret.kd = kd;
-    return ret;
-  }
-
-  Material createGlass(const glm::vec3& kd) {
-    Material ret;
-    ret.brdf_type = 2;
-    ret.kd = kd;
-    return ret;
-  }
-
-  Material createLight(const glm::vec3& le) {
-    Material ret;
-    ret.brdf_type = 0;
-    ret.le = le;
-    return ret;
-  }
-
   void setupCornellBox() {
     // setup material
     const Material white = createDiffuse(glm::vec3(0.8));
@@ -183,6 +127,62 @@ class Scene {
   }
 
  public:
+  std::vector<Primitive> primitives;
+
+  void addPrimitive(const Primitive& primitive) {
+    primitives.push_back(primitive);
+  }
+
+  std::vector<Material> materials;
+
+  void addMaterial(const Material& material) { materials.push_back(material); }
+
+  Primitive createSphere(const glm::vec3& center, float radius) {
+    Primitive ret;
+    ret.type = 0;
+    ret.center = center;
+    ret.radius = radius;
+    return ret;
+  }
+
+  static Primitive createPlane(const glm::vec3& leftCornerPoint,
+                               const glm::vec3& right, const glm::vec3& up) {
+    Primitive ret;
+    ret.type = 1;
+    ret.leftCornerPoint = leftCornerPoint;
+    ret.right = right;
+    ret.up = up;
+    return ret;
+  }
+
+  static Material createDiffuse(const glm::vec3& kd) {
+    Material ret;
+    ret.brdf_type = 0;
+    ret.kd = kd;
+    return ret;
+  }
+
+  static Material createMirror(const glm::vec3& kd) {
+    Material ret;
+    ret.brdf_type = 1;
+    ret.kd = kd;
+    return ret;
+  }
+
+  static Material createGlass(const glm::vec3& kd) {
+    Material ret;
+    ret.brdf_type = 2;
+    ret.kd = kd;
+    return ret;
+  }
+
+  static Material createLight(const glm::vec3& le) {
+    Material ret;
+    ret.brdf_type = 0;
+    ret.le = le;
+    return ret;
+  }
+
   Scene() {
     setupCornellBox();
     init();

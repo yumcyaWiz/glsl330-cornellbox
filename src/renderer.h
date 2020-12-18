@@ -22,7 +22,8 @@ class Renderer {
   GLuint stateTexture;
   GLuint accumFBO;
 
-  GLuint UBO;
+  GLuint materialUBO;
+  GLuint primitiveUBO;
 
   Rectangle rectangle;
 
@@ -76,11 +77,18 @@ class Renderer {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // setup UBO
-    glGenBuffers(1, &UBO);
-    glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+    glGenBuffers(1, &materialUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, materialUBO);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(Material) * scene.materials.size(),
+                 scene.materials.data(), GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, materialUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+    glGenBuffers(1, &primitiveUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, primitiveUBO);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(Primitive) * scene.primitives.size(),
                  scene.primitives.data(), GL_STATIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, primitiveUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     // set uniforms
@@ -91,8 +99,9 @@ class Renderer {
 
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
 
-    // set UBOS
-    pt_shader.setUBO("PrimitiveBlock", 0);
+    // set UBOs
+    pt_shader.setUBO("MaterialBlock", 0);
+    pt_shader.setUBO("PrimitiveBlock", 1);
 
     // setup scene
     setCornellBoxScene();

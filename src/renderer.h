@@ -16,10 +16,13 @@ class Renderer {
   unsigned int samples;
   glm::uvec2 resolution;
   Camera camera;
+  Scene scene;
 
   GLuint accumTexture;
   GLuint stateTexture;
   GLuint accumFBO;
+
+  GLuint UBO;
 
   Rectangle rectangle;
 
@@ -71,6 +74,14 @@ class Renderer {
     GLuint attachments[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
     glDrawBuffers(2, attachments);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // setup UBO
+    glGenBuffers(1, &UBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(Primitive) * scene.primitives.size(),
+                 scene.primitives.data(), GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     // set uniforms
     pt_shader.setUniform("resolution", resolution);

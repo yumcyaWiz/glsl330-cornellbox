@@ -72,12 +72,14 @@ class Scene {
     Material ret;
     ret.brdf_type = 2;
     ret.kd = kd;
+    return ret;
   }
 
   Material createLight(const glm::vec3& le) {
     Material ret;
     ret.brdf_type = 0;
     ret.le = le;
+    return ret;
   }
 
   void setupCornellBox() {

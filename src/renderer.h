@@ -91,6 +91,9 @@ class Renderer {
 
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
 
+    // set UBOS
+    pt_shader.setUBO("PrimitiveBlock", 0);
+
     // setup scene
     setCornellBoxScene();
   }

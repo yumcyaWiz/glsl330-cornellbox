@@ -36,6 +36,7 @@ class Renderer {
   Renderer(unsigned int width, unsigned int height)
       : samples(0),
         resolution({width, height}),
+        scene(),
         rectangle(),
         pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
         output_shader({"./shaders/pt.vert", "./shaders/output.frag"}) {
@@ -79,15 +80,21 @@ class Renderer {
     // setup UBO
     glGenBuffers(1, &materialUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, materialUBO);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(Material) * scene.materials.size(),
-                 scene.materials.data(), GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(Material) * 100, NULL,
+                 GL_STATIC_DRAW);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0,
+                    sizeof(Material) * scene.materials.size(),
+                    scene.materials.data());
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, materialUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     glGenBuffers(1, &primitiveUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, primitiveUBO);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(Primitive) * scene.primitives.size(),
-                 scene.primitives.data(), GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(Primitive) * 100, NULL,
+                 GL_STATIC_DRAW);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0,
+                    sizeof(Primitive) * scene.primitives.size(),
+                    scene.primitives.data());
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, primitiveUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -96,15 +103,13 @@ class Renderer {
     pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
     pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
     pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
-
-    output_shader.setUniformTexture("accumTexture", accumTexture, 0);
-
-    // set UBOs
     pt_shader.setUBO("MaterialBlock", 0);
     pt_shader.setUBO("PrimitiveBlock", 1);
 
+    output_shader.setUniformTexture("accumTexture", accumTexture, 0);
+
     // setup scene
-    setCornellBoxScene();
+    // setCornellBoxScene();
   }
 
   unsigned int getWidth() const { return resolution.x; }

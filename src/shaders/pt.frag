@@ -31,19 +31,20 @@ vec3 computeRadiance(in Ray ray_in) {
         IntersectInfo info;
         if(intersect(ray, info)) {
             Primitive hitPrimitive = primitives[info.primID];
+            Material hitMaterial = materials[hitPrimitive.material_id];
             vec3 wo = -ray.direction;
             vec3 wo_local = worldToLocal(wo, info.dpdu, info.hitNormal, info.dpdv);
 
             // Le 
-            color += throughput * hitPrimitive.le;
-            if(any(greaterThan(hitPrimitive.le, vec3(0)))) {
+            color += throughput * hitMaterial.le;
+            if(any(greaterThan(hitMaterial.le, vec3(0)))) {
                 break;
             }
 
             // BRDF Sampling
             float pdf;
             vec3 wi_local;
-            vec3 brdf = sampleBRDF(wo_local, wi_local, hitPrimitive.brdf_type, hitPrimitive.kd, pdf);
+            vec3 brdf = sampleBRDF(wo_local, wi_local, hitMaterial.brdf_type, hitMaterial.kd, pdf);
             // prevent NaN
             if(pdf == 0.0) {
                 break;

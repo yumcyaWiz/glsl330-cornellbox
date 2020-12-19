@@ -98,6 +98,7 @@ class Renderer {
 
     glGenBuffers(1, &materialUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, materialUBO);
+    std::cout << sizeof(Material) << std::endl;
     glBufferData(GL_UNIFORM_BUFFER, sizeof(Material) * 100,
                  scene.materials.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);

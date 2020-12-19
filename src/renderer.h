@@ -94,21 +94,21 @@ class Renderer {
     glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraBlock), &camera.params,
                  GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, cameraUBO);
 
     glGenBuffers(1, &materialUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, materialUBO);
-    std::cout << sizeof(Material) << std::endl;
     glBufferData(GL_UNIFORM_BUFFER, sizeof(Material) * 100,
                  scene.materials.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, materialUBO);
 
     glGenBuffers(1, &primitiveUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, primitiveUBO);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(Primitive) * 100,
                  scene.primitives.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, cameraUBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, materialUBO);
     glBindBufferBase(GL_UNIFORM_BUFFER, 2, primitiveUBO);
 
     // set uniforms

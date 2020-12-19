@@ -26,12 +26,14 @@ vec3 sampleBRDF(in vec3 wo, out vec3 wi, in int brdf_type, in vec3 kd, out float
     case 0:
         wi = sampleCosineHemisphere(random(), random(), pdf);
         return kd * PI_INV;
+        break;
 
     // mirror
     case 1:
         pdf = 1.0;
         wi = reflect(-wo, vec3(0, 1, 0));
         return kd / abs(wi.y);
+        break;
 
     // glass
     case 2:
@@ -65,5 +67,6 @@ vec3 sampleBRDF(in vec3 wo, out vec3 wi, in int brdf_type, in vec3 kd, out float
         }
 
         return kd / abs(wi.y);
+        break;
     }
 }

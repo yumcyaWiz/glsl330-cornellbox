@@ -29,6 +29,14 @@ class Renderer {
 
   Shader pt_shader;
   Shader output_shader;
+  Shader normal_shader;
+
+  enum class RenderMode {
+    Render,
+    Normal,
+  };
+
+  RenderMode mode;
 
   bool clear_flag;
 
@@ -39,7 +47,9 @@ class Renderer {
         scene(),
         rectangle(),
         pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
-        output_shader({"./shaders/pt.vert", "./shaders/output.frag"}) {
+        output_shader({"./shaders/pt.vert", "./shaders/output.frag"}),
+        normal_shader({"./shaders/pt.vert", "./shaders/normal.frag"}),
+        mode(RenderMode::Render) {
     // setup accumulate texture
     glGenTextures(1, &accumTexture);
     glBindTexture(GL_TEXTURE_2D, accumTexture);
@@ -108,8 +118,9 @@ class Renderer {
 
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
 
-    // setup scene
-    // setCornellBoxScene();
+    normal_shader.setUniform("resolution", resolution);
+    normal_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
+    normal_shader.setUBO("PrimitiveBlock", 1);
   }
 
   unsigned int getWidth() const { return resolution.x; }

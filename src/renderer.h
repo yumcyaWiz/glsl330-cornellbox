@@ -11,6 +11,11 @@
 #include "scene.h"
 #include "shader.h"
 
+enum class RenderMode {
+  Render,
+  Normal,
+};
+
 class Renderer {
  private:
   unsigned int samples;
@@ -30,11 +35,6 @@ class Renderer {
   Shader pt_shader;
   Shader output_shader;
   Shader normal_shader;
-
-  enum class RenderMode {
-    Render,
-    Normal,
-  };
 
   RenderMode mode;
 

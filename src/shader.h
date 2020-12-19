@@ -108,6 +108,12 @@ class Shader {
     linkShader();
   }
 
+  void destroy() {
+    glDeleteShader(vertex_shader);
+    glDeleteShader(fragment_shader);
+    glDeleteProgram(program);
+  }
+
   void activate() const { glUseProgram(program); }
   void deactivate() const { glUseProgram(0); }
 

@@ -153,6 +153,8 @@ int main() {
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
 
+  renderer->destroy();
+
   glfwDestroyWindow(window);
   glfwTerminate();
 

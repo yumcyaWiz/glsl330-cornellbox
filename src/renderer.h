@@ -137,6 +137,24 @@ class Renderer {
     albedo_shader.setUBO("PrimitiveBlock", 2);
   }
 
+  void destroy() {
+    glDeleteTextures(1, &accumTexture);
+    glDeleteTextures(1, &stateTexture);
+
+    glDeleteFramebuffers(1, &accumFBO);
+
+    glDeleteBuffers(1, &cameraUBO);
+    glDeleteBuffers(1, &materialUBO);
+    glDeleteBuffers(1, &primitiveUBO);
+
+    pt_shader.destroy();
+    output_shader.destroy();
+    normal_shader.destroy();
+    albedo_shader.destroy();
+
+    rectangle.destroy();
+  }
+
   unsigned int getWidth() const { return resolution.x; }
   unsigned int getHeight() const { return resolution.y; }
   unsigned int getSamples() const { return samples; }

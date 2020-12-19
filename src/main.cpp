@@ -113,6 +113,12 @@ int main() {
         renderer->resize(resolution[0], resolution[1]);
       }
 
+      static RenderMode mode = renderer->getRenderMode();
+      if (ImGui::Combo("Layer", reinterpret_cast<int*>(&mode),
+                       "Render\0Normal\0\0")) {
+        renderer->setRenderMode(mode);
+      }
+
       ImGui::Text("Samples: %d", renderer->getSamples());
 
       glm::vec3 camPos = renderer->getCameraPosition();

@@ -138,29 +138,47 @@ class Renderer {
     clear_flag = true;
   }
 
+  RenderMode getRenderMode() const { return mode; }
+  void setRenderMode(const RenderMode& mode) {
+    this->mode = mode;
+    clear();
+  }
+
   void render() {
     if (clear_flag) {
       clear();
       clear_flag = false;
     }
 
-    // path tracing
-    glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
-    pt_shader.setUniform("camPos", camera.camPos);
-    pt_shader.setUniform("camForward", camera.camForward);
-    pt_shader.setUniform("camRight", camera.camRight);
-    pt_shader.setUniform("camUp", camera.camUp);
+    switch (mode) {
+      case RenderMode::Render:
+        // path tracing
+        glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
+        pt_shader.setUniform("camPos", camera.camPos);
+        pt_shader.setUniform("camForward", camera.camForward);
+        pt_shader.setUniform("camRight", camera.camRight);
+        pt_shader.setUniform("camUp", camera.camUp);
 
-    glViewport(0, 0, resolution.x, resolution.y);
-    rectangle.draw(pt_shader);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, resolution.x, resolution.y);
+        rectangle.draw(pt_shader);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // update samples
-    samples++;
+        // update samples
+        samples++;
 
-    // output
-    output_shader.setUniform("samplesInv", 1.0f / samples);
-    rectangle.draw(output_shader);
+        // output
+        output_shader.setUniform("samplesInv", 1.0f / samples);
+        rectangle.draw(output_shader);
+        break;
+
+      case RenderMode::Normal:
+        normal_shader.setUniform("camPos", camera.camPos);
+        normal_shader.setUniform("camForward", camera.camForward);
+        normal_shader.setUniform("camRight", camera.camRight);
+        normal_shader.setUniform("camUp", camera.camUp);
+        rectangle.draw(normal_shader);
+        break;
+    }
   }
 
   void clear() {

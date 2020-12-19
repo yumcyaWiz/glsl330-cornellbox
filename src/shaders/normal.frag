@@ -15,7 +15,7 @@ void main() {
     uv.y = -uv.y;
     Ray ray = rayGen(uv);
 
-    vec3 color;
+    vec3 color = vec3(0);
     IntersectInfo info;
     if(intersect(ray, info)) {
       color = 0.5 * (info.hitNormal + 1.0);

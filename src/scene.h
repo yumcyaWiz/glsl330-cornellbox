@@ -42,12 +42,12 @@ class Scene {
 
     Primitive rightWall = createPlane(glm::vec3(0), glm::vec3(0, 548.8, 0),
                                       glm::vec3(0, 0, 559.2));
-    rightWall.material_id = 0;
+    rightWall.material_id = 1;
     addPrimitive(rightWall);
 
     Primitive leftWall = createPlane(
         glm::vec3(556, 0, 0), glm::vec3(0, 0, 559.2), glm::vec3(0, 548.8, 0));
-    leftWall.material_id = 0;
+    leftWall.material_id = 2;
     addPrimitive(leftWall);
 
     Primitive ceil = createPlane(glm::vec3(0, 548.8, 0), glm::vec3(556, 0, 0),

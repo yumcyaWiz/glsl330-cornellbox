@@ -14,6 +14,7 @@
 enum class RenderMode {
   Render,
   Normal,
+  Albedo,
 };
 
 class Renderer {
@@ -36,6 +37,7 @@ class Renderer {
   Shader pt_shader;
   Shader output_shader;
   Shader normal_shader;
+  Shader albedo_shader;
 
   RenderMode mode;
 
@@ -50,6 +52,7 @@ class Renderer {
         pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
         output_shader({"./shaders/pt.vert", "./shaders/output.frag"}),
         normal_shader({"./shaders/pt.vert", "./shaders/normal.frag"}),
+        albedo_shader({"./shaders/pt.vert", "./shaders/albedo.frag"}),
         mode(RenderMode::Render) {
     // setup accumulate texture
     glGenTextures(1, &accumTexture);
@@ -126,6 +129,12 @@ class Renderer {
     normal_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
     normal_shader.setUBO("CameraBlock", 0);
     normal_shader.setUBO("PrimitiveBlock", 2);
+
+    albedo_shader.setUniform("resolution", resolution);
+    albedo_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
+    albedo_shader.setUBO("CameraBlock", 0);
+    albedo_shader.setUBO("MaterialBlock", 1);
+    albedo_shader.setUBO("PrimitiveBlock", 2);
   }
 
   unsigned int getWidth() const { return resolution.x; }
@@ -179,6 +188,10 @@ class Renderer {
 
       case RenderMode::Normal:
         rectangle.draw(normal_shader);
+        break;
+
+      case RenderMode::Albedo:
+        rectangle.draw(albedo_shader);
         break;
     }
   }

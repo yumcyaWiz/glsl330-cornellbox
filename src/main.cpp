@@ -116,7 +116,7 @@ int main() {
 
       static RenderMode mode = renderer->getRenderMode();
       if (ImGui::Combo("Layer", reinterpret_cast<int*>(&mode),
-                       "Render\0Normal\0\0")) {
+                       "Render\0Normal\0Albedo\0\0")) {
         renderer->setRenderMode(mode);
       }
 

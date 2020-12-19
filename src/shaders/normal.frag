@@ -8,6 +8,7 @@
 #include common/closest_hit.frag
 
 in vec2 texCoord;
+out vec4 fragColor;
 
 void main() {
     // generate initial ray
@@ -21,5 +22,5 @@ void main() {
       color = 0.5 * (info.hitNormal + 1.0);
     }
 
-    gl_FragColor = vec4(color, 1.0);
+    fragColor = vec4(color, 1.0);
 }

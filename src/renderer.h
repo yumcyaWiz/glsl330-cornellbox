@@ -98,21 +98,15 @@ class Renderer {
 
     glGenBuffers(1, &materialUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, materialUBO);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(Material) * 100, NULL,
-                 GL_STATIC_DRAW);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0,
-                    sizeof(Material) * scene.materials.size(),
-                    scene.materials.data());
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(Material) * 100,
+                 scene.materials.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, materialUBO);
 
     glGenBuffers(1, &primitiveUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, primitiveUBO);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(Primitive) * 100, NULL,
-                 GL_STATIC_DRAW);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0,
-                    sizeof(Primitive) * scene.primitives.size(),
-                    scene.primitives.data());
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(Primitive) * 100,
+                 scene.primitives.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     glBindBufferBase(GL_UNIFORM_BUFFER, 2, primitiveUBO);
 

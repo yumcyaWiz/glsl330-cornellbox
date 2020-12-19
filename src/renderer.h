@@ -27,6 +27,7 @@ class Renderer {
   GLuint stateTexture;
   GLuint accumFBO;
 
+  GLuint cameraUBO;
   GLuint materialUBO;
   GLuint primitiveUBO;
 
@@ -88,6 +89,13 @@ class Renderer {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // setup UBO
+    glGenBuffers(1, &cameraUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraBlock), &camera.params,
+                 GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, cameraUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
     glGenBuffers(1, &materialUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, materialUBO);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(Material) * 100, NULL,
@@ -95,7 +103,7 @@ class Renderer {
     glBufferSubData(GL_UNIFORM_BUFFER, 0,
                     sizeof(Material) * scene.materials.size(),
                     scene.materials.data());
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, materialUBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, materialUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     glGenBuffers(1, &primitiveUBO);
@@ -105,7 +113,7 @@ class Renderer {
     glBufferSubData(GL_UNIFORM_BUFFER, 0,
                     sizeof(Primitive) * scene.primitives.size(),
                     scene.primitives.data());
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, primitiveUBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, primitiveUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     // set uniforms
@@ -113,28 +121,36 @@ class Renderer {
     pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
     pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
     pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
-    pt_shader.setUBO("MaterialBlock", 0);
-    pt_shader.setUBO("PrimitiveBlock", 1);
+    pt_shader.setUBO("CameraBlock", 0);
+    pt_shader.setUBO("MaterialBlock", 1);
+    pt_shader.setUBO("PrimitiveBlock", 2);
 
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
 
     normal_shader.setUniform("resolution", resolution);
     normal_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
-    normal_shader.setUBO("PrimitiveBlock", 1);
+    normal_shader.setUBO("CameraBlock", 0);
+    normal_shader.setUBO("PrimitiveBlock", 2);
   }
 
   unsigned int getWidth() const { return resolution.x; }
   unsigned int getHeight() const { return resolution.y; }
   unsigned int getSamples() const { return samples; }
 
-  glm::vec3 getCameraPosition() const { return camera.camPos; }
+  glm::vec3 getCameraPosition() const { return camera.params.camPos; }
 
   void moveCamera(const glm::vec3& v) {
     camera.move(v);
+    glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(CameraBlock), &camera.params);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
     clear_flag = true;
   }
   void orbitCamera(float dTheta, float dPhi) {
     camera.orbit(dTheta, dPhi);
+    glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(CameraBlock), &camera.params);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
     clear_flag = true;
   }
 
@@ -154,10 +170,12 @@ class Renderer {
       case RenderMode::Render:
         // path tracing
         glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
+        /*
         pt_shader.setUniform("camPos", camera.camPos);
         pt_shader.setUniform("camForward", camera.camForward);
         pt_shader.setUniform("camRight", camera.camRight);
         pt_shader.setUniform("camUp", camera.camUp);
+        */
 
         glViewport(0, 0, resolution.x, resolution.y);
         rectangle.draw(pt_shader);
@@ -172,10 +190,12 @@ class Renderer {
         break;
 
       case RenderMode::Normal:
-        normal_shader.setUniform("camPos", camera.camPos);
-        normal_shader.setUniform("camForward", camera.camForward);
-        normal_shader.setUniform("camRight", camera.camRight);
-        normal_shader.setUniform("camUp", camera.camUp);
+        /*
+          normal_shader.setUniform("camPos", camera.camPos);
+          normal_shader.setUniform("camForward", camera.camForward);
+          normal_shader.setUniform("camRight", camera.camRight);
+          normal_shader.setUniform("camUp", camera.camUp);
+          */
         rectangle.draw(normal_shader);
         break;
     }

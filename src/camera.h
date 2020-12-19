@@ -4,33 +4,42 @@
 
 #include "glm/glm.hpp"
 
+struct alignas(4 * sizeof(float)) CameraBlock {
+  alignas(4 * sizeof(float)) glm::vec3 camPos;
+  alignas(4 * sizeof(float)) glm::vec3 camForward;
+  alignas(4 * sizeof(float)) glm::vec3 camRight;
+  alignas(4 * sizeof(float)) glm::vec3 camUp;
+
+  CameraBlock(const glm::vec3& camPos, const glm::vec3& camForward,
+              const glm::vec3& camRight, const glm::vec3& camUp)
+      : camPos(camPos),
+        camForward(camForward),
+        camRight(camRight),
+        camUp(camUp) {}
+};
+
 class Camera {
  public:
-  glm::vec3 camPos;
-  glm::vec3 camForward;
-  glm::vec3 camRight;
-  glm::vec3 camUp;
+  CameraBlock params;
 
  private:
   glm::vec3 lookat;
 
  public:
   Camera()
-      : camPos({278, 273, -900}),
-        camForward({0, 0, 1}),
-        camRight({1, 0, 0}),
-        camUp({0, 1, 0}),
+      : params({278, 273, -900}, {0, 0, 1}, {1, 0, 0}, {0, 1, 0}),
         lookat({0, 0, 0}) {}
 
   void move(const glm::vec3& v) {
-    const float dist = glm::distance(lookat, camPos);
-    camPos += v.x * camRight + v.y * camUp + v.z * camForward;
-    lookat = camPos + dist * camForward;
+    const float dist = glm::distance(lookat, params.camPos);
+    params.camPos +=
+        v.x * params.camRight + v.y * params.camUp + v.z * params.camForward;
+    lookat = params.camPos + dist * params.camForward;
   }
 
   void orbit(float dTheta, float dPhi) {
     // compute current (theta, phi)
-    glm::vec3 r = glm::normalize(camPos - lookat);
+    glm::vec3 r = glm::normalize(params.camPos - lookat);
     float phi = std::atan2(r.z, r.x);
     if (phi < 0) phi += 2 * 3.14;
     float theta = std::acos(r.y);
@@ -43,11 +52,13 @@ class Camera {
     r = glm::vec3(std::cos(phi) * std::sin(theta), std::cos(theta),
                   std::sin(phi) * std::sin(theta));
 
-    const float dist = glm::distance(lookat, camPos);
-    camPos = lookat + dist * r;
-    camForward = -r;
-    camRight = glm::normalize(glm::cross(camForward, glm::vec3(0, 1, 0)));
-    camUp = glm::normalize(glm::cross(camRight, camForward));
+    const float dist = glm::distance(lookat, params.camPos);
+    params.camPos = lookat + dist * r;
+    params.camForward = -r;
+    params.camRight =
+        glm::normalize(glm::cross(params.camForward, glm::vec3(0, 1, 0)));
+    params.camUp =
+        glm::normalize(glm::cross(params.camRight, params.camForward));
   }
 };
 

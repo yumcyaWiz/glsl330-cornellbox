@@ -4,11 +4,11 @@
 
 #include "glm/glm.hpp"
 
-struct alignas(4 * sizeof(float)) CameraBlock {
-  alignas(4 * sizeof(float)) glm::vec3 camPos;
-  alignas(4 * sizeof(float)) glm::vec3 camForward;
-  alignas(4 * sizeof(float)) glm::vec3 camRight;
-  alignas(4 * sizeof(float)) glm::vec3 camUp;
+struct alignas(16) CameraBlock {
+  alignas(16) glm::vec3 camPos;
+  alignas(16) glm::vec3 camForward;
+  alignas(16) glm::vec3 camRight;
+  alignas(16) glm::vec3 camUp;
 
   CameraBlock(const glm::vec3& camPos, const glm::vec3& camForward,
               const glm::vec3& camRight, const glm::vec3& camUp)

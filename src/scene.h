@@ -134,7 +134,7 @@ class Scene {
 
   void addMaterial(const Material& material) { materials.push_back(material); }
 
-  Primitive createSphere(const glm::vec3& center, float radius) {
+  static Primitive createSphere(const glm::vec3& center, float radius) {
     Primitive ret;
     ret.type = 0;
     ret.center = center;

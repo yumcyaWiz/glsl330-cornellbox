@@ -4,24 +4,21 @@
 
 #include "glm/glm.hpp"
 
-struct Primitive {
-  int id;                     // 4
-  int type;                   // 8
-  glm::vec3 center;           // 24
-  float radius;               // 28
-  glm::vec3 leftCornerPoint;  // 44
-  glm::vec3 up;               // 60
-  glm::vec3 right;            // 76
-  int material_id;            // 80
+struct alignas(4 * sizeof(float)) Primitive {
+  int id;                                                // 4
+  int type;                                              // 8
+  alignas(4 * sizeof(float)) glm::vec3 center;           // 24
+  float radius;                                          // 28
+  alignas(4 * sizeof(float)) glm::vec3 leftCornerPoint;  // 44
+  alignas(4 * sizeof(float)) glm::vec3 up;               // 60
+  alignas(4 * sizeof(float)) glm::vec3 right;            // 76
+  int material_id;                                       // 80
 };
 
-struct Material {
-  int brdf_type;  // 4
-  glm::vec3 kd;   // 20
-  glm::vec3 le;   // 36
-  int padding1;   // 40
-  int padding2;   // 44
-  int padding3;   // 48
+struct alignas(4 * sizeof(float)) Material {
+  int brdf_type;                            // 4
+  alignas(4 * sizeof(float)) glm::vec3 kd;  // 20
+  alignas(4 * sizeof(float)) glm::vec3 le;  // 36
 };
 
 class Scene {

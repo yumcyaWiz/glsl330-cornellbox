@@ -36,8 +36,8 @@ vec3 computeRadiance(in Ray ray_in) {
             vec3 wo_local = worldToLocal(wo, info.dpdu, info.hitNormal, info.dpdv);
 
             // Le 
-            color += throughput * hitMaterial.le;
             if(any(greaterThan(hitMaterial.le, vec3(0)))) {
+                color += throughput * hitMaterial.le;
                 break;
             }
 

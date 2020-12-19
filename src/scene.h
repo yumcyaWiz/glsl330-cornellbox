@@ -156,6 +156,7 @@ class Scene {
     Material ret;
     ret.brdf_type = 0;
     ret.kd = kd;
+    ret.le = glm::vec3(0);
     return ret;
   }
 
@@ -163,6 +164,7 @@ class Scene {
     Material ret;
     ret.brdf_type = 1;
     ret.kd = kd;
+    ret.le = glm::vec3(0);
     return ret;
   }
 
@@ -170,12 +172,14 @@ class Scene {
     Material ret;
     ret.brdf_type = 2;
     ret.kd = kd;
+    ret.le = glm::vec3(0);
     return ret;
   }
 
   static Material createLight(const glm::vec3& le) {
     Material ret;
     ret.brdf_type = 0;
+    ret.kd = glm::vec3(0);
     ret.le = le;
     return ret;
   }

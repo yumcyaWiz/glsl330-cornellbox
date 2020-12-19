@@ -169,30 +169,6 @@ class Shader {
     glUniformBlockBinding(program, index, binding_number);
     deactivate();
   }
-
-  /*
-  void setUniform(const std::string& uniform_name,
-                  const std::variant<GLint, GLuint, GLfloat, glm::vec2>& v) {
-    GLint location = glGetUniformLocation(program, uniform_name.c_str());
-
-    struct Visitor {
-      Visitor(GLint _location) : location(_location) {}
-
-      void operator()(GLint value) { glUniform1i(location, value); }
-      void operator()(GLuint value) { glUniform1i(location, value); }
-      void operator()(GLfloat value) { glUniform1f(location, value); }
-      void operator()(const glm::vec2& value) {
-        glUniform2fv(location, 1, glm::value_ptr(value));
-      }
-
-      GLint location;
-    };
-
-    activate();
-    std::visit(Visitor{location}, v);
-    deactivate();
-  }
-  */
 };
 
 #endif

@@ -170,12 +170,6 @@ class Renderer {
       case RenderMode::Render:
         // path tracing
         glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
-        /*
-        pt_shader.setUniform("camPos", camera.camPos);
-        pt_shader.setUniform("camForward", camera.camForward);
-        pt_shader.setUniform("camRight", camera.camRight);
-        pt_shader.setUniform("camUp", camera.camUp);
-        */
 
         glViewport(0, 0, resolution.x, resolution.y);
         rectangle.draw(pt_shader);
@@ -190,12 +184,6 @@ class Renderer {
         break;
 
       case RenderMode::Normal:
-        /*
-          normal_shader.setUniform("camPos", camera.camPos);
-          normal_shader.setUniform("camForward", camera.camForward);
-          normal_shader.setUniform("camRight", camera.camRight);
-          normal_shader.setUniform("camUp", camera.camUp);
-          */
         rectangle.draw(normal_shader);
         break;
     }

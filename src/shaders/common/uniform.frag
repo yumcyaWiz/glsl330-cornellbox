@@ -11,6 +11,11 @@ uniform vec3 camForward;
 uniform vec3 camRight;
 uniform vec3 camUp;
 
+const int MAX_N_MATERIALS = 100;
+layout(std140) uniform MaterialBlock {
+  Material materials[MAX_N_MATERIALS];
+};
+
 const int MAX_N_PRIMITIVES = 100;
 layout(std140) uniform PrimitiveBlock {
   Primitive primitives[MAX_N_PRIMITIVES];

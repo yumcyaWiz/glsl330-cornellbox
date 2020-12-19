@@ -21,6 +21,12 @@ struct IntersectInfo {
     int primID;
 };
 
+struct Material {
+    int brdf_type;
+    vec3 kd;
+    vec3 le;
+};
+
 struct Primitive {
     int id;
     int type;
@@ -29,9 +35,7 @@ struct Primitive {
     vec3 leftCornerPoint;
     vec3 up;
     vec3 right;
-    int brdf_type;
-    vec3 kd;
-    vec3 le;
+    int material_id;
 };
 
 struct XORShift32_state {

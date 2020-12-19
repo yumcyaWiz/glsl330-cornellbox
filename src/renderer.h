@@ -92,9 +92,9 @@ class Renderer {
     glGenBuffers(1, &cameraUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraBlock), &camera.params,
-                 GL_STATIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, cameraUBO);
+                 GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, cameraUBO);
 
     glGenBuffers(1, &materialUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, materialUBO);
@@ -103,8 +103,8 @@ class Renderer {
     glBufferSubData(GL_UNIFORM_BUFFER, 0,
                     sizeof(Material) * scene.materials.size(),
                     scene.materials.data());
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, materialUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, materialUBO);
 
     glGenBuffers(1, &primitiveUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, primitiveUBO);
@@ -113,8 +113,8 @@ class Renderer {
     glBufferSubData(GL_UNIFORM_BUFFER, 0,
                     sizeof(Primitive) * scene.primitives.size(),
                     scene.primitives.data());
-    glBindBufferBase(GL_UNIFORM_BUFFER, 2, primitiveUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, primitiveUBO);
 
     // set uniforms
     pt_shader.setUniform("resolution", resolution);
@@ -170,7 +170,6 @@ class Renderer {
       case RenderMode::Render:
         // path tracing
         glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
-
         glViewport(0, 0, resolution.x, resolution.y);
         rectangle.draw(pt_shader);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -3,6 +3,8 @@
 #include <cmath>
 
 #include "glm/glm.hpp"
+//
+#include "constant.h"
 
 struct alignas(16) CameraBlock {
   alignas(16) glm::vec3 camPos;
@@ -41,7 +43,7 @@ class Camera {
     // compute current (theta, phi)
     glm::vec3 r = glm::normalize(params.camPos - lookat);
     float phi = std::atan2(r.z, r.x);
-    if (phi < 0) phi += 2 * 3.14;
+    if (phi < 0) phi += 2 * PI;
     float theta = std::acos(r.y);
 
     // add

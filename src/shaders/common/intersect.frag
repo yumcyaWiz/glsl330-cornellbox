@@ -33,7 +33,7 @@ bool intersectSphere(in vec3 center, in float radius, in Ray ray, out IntersectI
     info.dpdv = normalize(vec3(cos(phi) * r.y, -radius * sin(theta), sin(phi) * r.y));
 
     info.u = phi * 0.5 * PI_INV;
-    info.v = theta / PI;
+    info.v = theta * PI_INV;
     return true;
 }
 

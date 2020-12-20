@@ -30,13 +30,13 @@ class Camera {
  public:
   Camera()
       : params({278, 273, -900}, {0, 0, 1}, {1, 0, 0}, {0, 1, 0}),
-        lookat({0, 0, 0}) {}
+        lookat({278, 273, 279.6}) {}
 
   void move(const glm::vec3& v) {
-    const float dist = glm::distance(lookat, params.camPos);
+    // const float dist = glm::distance(lookat, params.camPos);
     params.camPos +=
         v.x * params.camRight + v.y * params.camUp + v.z * params.camForward;
-    lookat = params.camPos + dist * params.camForward;
+    // lookat = params.camPos + dist * params.camForward;
   }
 
   void orbit(float dTheta, float dPhi) {

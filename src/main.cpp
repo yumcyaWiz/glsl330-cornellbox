@@ -11,6 +11,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 //
+#include "constant.h"
 #include "rectangle.h"
 #include "renderer.h"
 #include "shader.h"
@@ -125,6 +126,11 @@ int main() {
       glm::vec3 camPos = renderer->getCameraPosition();
       ImGui::Text("Camera Position: (%.3f, %.3f, %.3f)", camPos.x, camPos.y,
                   camPos.z);
+
+      static float fov = renderer->getCameraFOV() / PI * 180.0f;
+      if (ImGui::InputFloat("FOV", &fov)) {
+        renderer->setFOV(fov / 180.0f * PI);
+      }
 
       ImGui::Text("FPS: %.1f", io.Framerate);
     }

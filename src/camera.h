@@ -18,13 +18,13 @@ struct alignas(16) CameraBlock {
       : camPos(camPos),
         camForward(camForward),
         camRight(camRight),
-        camUp(camUp),
-        a(1.7071067811865477) {}
+        camUp(camUp) {}
 };
 
 class Camera {
  public:
   CameraBlock params;
+  float fov;
 
  private:
   glm::vec3 lookat;
@@ -32,9 +32,15 @@ class Camera {
  public:
   Camera()
       : params({278, 273, -900}, {0, 0, 1}, {1, 0, 0}, {0, 1, 0}),
-        lookat({278, 273, 279.6}) {}
+        fov(0.25 * PI),
+        lookat({278, 273, 279.6}) {
+    setFOV(fov);
+  }
 
-  void setFOV(float fov) { params.a = 1.0f / std::tan(0.5f * fov); }
+  void setFOV(float fov) {
+    this->fov = fov;
+    params.a = 1.0f / std::tan(0.5f * fov);
+  }
 
   void move(const glm::vec3& v) {
     // const float dist = glm::distance(lookat, params.camPos);

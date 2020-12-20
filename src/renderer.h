@@ -160,7 +160,15 @@ class Renderer {
   unsigned int getSamples() const { return samples; }
 
   glm::vec3 getCameraPosition() const { return camera.params.camPos; }
+  float getCameraFOV() const { return camera.fov; }
 
+  void setFOV(float fov) {
+    camera.setFOV(fov);
+    glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(CameraBlock), &camera.params);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    clear_flag = true;
+  }
   void moveCamera(const glm::vec3& v) {
     camera.move(v);
     glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);

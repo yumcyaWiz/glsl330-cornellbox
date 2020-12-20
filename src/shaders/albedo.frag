@@ -14,7 +14,8 @@ void main() {
     // generate initial ray
     vec2 uv = (2.0*gl_FragCoord.xy - resolution) * resolutionYInv;
     uv.y = -uv.y;
-    Ray ray = rayGen(uv);
+    float pdf;
+    Ray ray = rayGen(uv, pdf);
 
     vec3 color = vec3(0);
     IntersectInfo info;

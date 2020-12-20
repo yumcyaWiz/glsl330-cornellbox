@@ -73,11 +73,13 @@ void main() {
     // generate initial ray
     vec2 uv = (2.0*(gl_FragCoord.xy + vec2(random(), random())) - resolution) * resolutionYInv;
     uv.y = -uv.y;
-    Ray ray = rayGen(uv);
+    float pdf;
+    Ray ray = rayGen(uv, pdf);
+    float cos_term = dot(camForward, ray.direction);
 
     // accumulate sampled color on accumTexture
-    vec3 radiance = computeRadiance(ray);
-    color = texture(accumTexture, texCoord).xyz + radiance;
+    vec3 radiance = computeRadiance(ray) / pdf;
+    color = texture(accumTexture, texCoord).xyz + radiance * cos_term;
 
     // save RNG state on stateTexture
     state = RNG_STATE.a;

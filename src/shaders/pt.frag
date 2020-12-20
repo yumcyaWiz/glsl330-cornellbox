@@ -75,7 +75,7 @@ void main() {
     uv.y = -uv.y;
     float pdf;
     Ray ray = rayGen(uv, pdf);
-    float cos_term = dot(camForward, ray.direction);
+    float cos_term = dot(camera.camForward, ray.direction);
 
     // accumulate sampled color on accumTexture
     vec3 radiance = computeRadiance(ray) / pdf;

@@ -9,7 +9,8 @@ layout(std140) uniform CameraBlock {
   vec3 camForward;
   vec3 camRight;
   vec3 camUp;
-};
+  float a;
+} camera;
 
 const int MAX_N_MATERIALS = 100;
 layout(std140) uniform MaterialBlock {

@@ -1,8 +1,10 @@
-uniform uvec2 resolution;
-uniform float resolutionYInv;
-
 uniform sampler2D accumTexture;
 uniform usampler2D stateTexture;
+
+layout(std140) uniform GlobalBlock {
+  uvec2 resolution;
+  float resolutionYInv;
+};
 
 layout(std140) uniform CameraBlock {
   vec3 camPos;

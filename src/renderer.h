@@ -19,8 +19,20 @@ enum class RenderMode {
 
 class Renderer {
  private:
+  struct alignas(16) GlobalBlock {
+    alignas(8) glm::uvec2 resolution;
+    float resolutionYInv;
+
+    GlobalBlock(const glm::uvec2& resolution) { setResolution(resolution); }
+
+    void setResolution(const glm::uvec2& resolution) {
+      this->resolution = resolution;
+      resolutionYInv = 1.0f / resolution.y;
+    }
+  };
+
   unsigned int samples;
-  glm::uvec2 resolution;
+  GlobalBlock global;
   Camera camera;
   Scene scene;
 
@@ -28,6 +40,7 @@ class Renderer {
   GLuint stateTexture;
   GLuint accumFBO;
 
+  GLuint globalUBO;
   GLuint cameraUBO;
   GLuint materialUBO;
   GLuint primitiveUBO;
@@ -46,9 +59,7 @@ class Renderer {
  public:
   Renderer(unsigned int width, unsigned int height)
       : samples(0),
-        resolution({width, height}),
-        scene(),
-        rectangle(),
+        global({width, height}),
         pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
         output_shader({"./shaders/pt.vert", "./shaders/output.frag"}),
         normal_shader({"./shaders/pt.vert", "./shaders/normal.frag"}),
@@ -92,6 +103,12 @@ class Renderer {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // setup UBO
+    glGenBuffers(1, &globalUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, globalUBO);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(GlobalBlock), &global,
+                 GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
     glGenBuffers(1, &cameraUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraBlock), &camera.params,
@@ -110,31 +127,29 @@ class Renderer {
                  scene.primitives.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, cameraUBO);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, materialUBO);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 2, primitiveUBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, globalUBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, cameraUBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, materialUBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 3, primitiveUBO);
 
     // set uniforms
-    pt_shader.setUniform("resolution", resolution);
-    pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
     pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
     pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
-    pt_shader.setUBO("CameraBlock", 0);
-    pt_shader.setUBO("MaterialBlock", 1);
-    pt_shader.setUBO("PrimitiveBlock", 2);
+    pt_shader.setUBO("GlobalBlock", 0);
+    pt_shader.setUBO("CameraBlock", 1);
+    pt_shader.setUBO("MaterialBlock", 2);
+    pt_shader.setUBO("PrimitiveBlock", 3);
 
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
 
-    normal_shader.setUniform("resolution", resolution);
-    normal_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
-    normal_shader.setUBO("CameraBlock", 0);
-    normal_shader.setUBO("PrimitiveBlock", 2);
+    normal_shader.setUBO("GlobalBlock", 0);
+    normal_shader.setUBO("CameraBlock", 1);
+    normal_shader.setUBO("PrimitiveBlock", 3);
 
-    albedo_shader.setUniform("resolution", resolution);
-    albedo_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
-    albedo_shader.setUBO("CameraBlock", 0);
-    albedo_shader.setUBO("MaterialBlock", 1);
-    albedo_shader.setUBO("PrimitiveBlock", 2);
+    albedo_shader.setUBO("GlobalBlock", 0);
+    albedo_shader.setUBO("CameraBlock", 1);
+    albedo_shader.setUBO("MaterialBlock", 2);
+    albedo_shader.setUBO("PrimitiveBlock", 3);
   }
 
   void destroy() {
@@ -143,6 +158,7 @@ class Renderer {
 
     glDeleteFramebuffers(1, &accumFBO);
 
+    glDeleteBuffers(1, &globalUBO);
     glDeleteBuffers(1, &cameraUBO);
     glDeleteBuffers(1, &materialUBO);
     glDeleteBuffers(1, &primitiveUBO);
@@ -155,8 +171,8 @@ class Renderer {
     rectangle.destroy();
   }
 
-  unsigned int getWidth() const { return resolution.x; }
-  unsigned int getHeight() const { return resolution.y; }
+  unsigned int getWidth() const { return global.resolution.x; }
+  unsigned int getHeight() const { return global.resolution.y; }
   unsigned int getSamples() const { return samples; }
 
   glm::vec3 getCameraPosition() const { return camera.params.camPos; }
@@ -196,11 +212,12 @@ class Renderer {
       clear_flag = false;
     }
 
+    glViewport(0, 0, global.resolution.x, global.resolution.y);
+
     switch (mode) {
       case RenderMode::Render:
         // path tracing
         glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
-        glViewport(0, 0, resolution.x, resolution.y);
         rectangle.draw(pt_shader);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -225,9 +242,9 @@ class Renderer {
   void clear() {
     // clear accumTexture
     glBindTexture(GL_TEXTURE_2D, accumTexture);
-    std::vector<GLfloat> data(3 * resolution.x * resolution.y);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, resolution.x, resolution.y, GL_RGB,
-                    GL_FLOAT, data.data());
+    std::vector<GLfloat> data(3 * global.resolution.x * global.resolution.y);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, global.resolution.x,
+                    global.resolution.y, GL_RGB, GL_FLOAT, data.data());
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // update texture uniforms
@@ -240,10 +257,10 @@ class Renderer {
 
   void resize(unsigned int width, unsigned int height) {
     // update resolution
-    resolution = glm::uvec2(width, height);
-    pt_shader.setUniform("resolution", resolution);
-    pt_shader.setUniform("resolutionYInv", 1.0f / resolution.y);
-    output_shader.setUniform("resolution", resolution);
+    global.setResolution(glm::uvec2(width, height));
+    glBindBuffer(GL_UNIFORM_BUFFER, globalUBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(GlobalBlock), &global);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     // resize textures
     glBindTexture(GL_TEXTURE_2D, accumTexture);

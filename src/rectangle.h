@@ -6,6 +6,8 @@
 
 class Rectangle {
  private:
+  GLuint VBO;
+  GLuint EBO;
   GLuint VAO;
 
  public:
@@ -19,14 +21,12 @@ class Rectangle {
     GLfloat vertices[] = {-1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, -1.0f,
                           0.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
                           1.0f,  -1.0f, 1.0f, 0.0f, 0.0f, 1.0f};
-    GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // setup EBO;
     GLuint indices[] = {0, 1, 2, 2, 3, 0};
-    GLuint EBO;
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
@@ -44,12 +44,13 @@ class Rectangle {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
   }
 
-  void destroy() { glDeleteVertexArrays(1, &VAO); }
+  void destroy() {
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    glDeleteVertexArrays(1, &VAO);
+  }
 
   void draw(const Shader& shader) const {
     shader.activate();

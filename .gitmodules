@@ -1,7 +1,7 @@
-[submodule "deps/glfw"]
+[submodule "external/glfw"]
 	path = external/glfw
 	url = git@github.com:glfw/glfw.git
-[submodule "deps/glm"]
+[submodule "external/glm"]
 	path = external/glm
 	url = git@github.com:g-truc/glm.git
 [submodule "external/GLSL-Shader-Includes"]

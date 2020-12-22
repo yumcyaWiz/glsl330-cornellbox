@@ -1,6 +1,6 @@
 # glsl-cornellbox
 
-Render Cornell Box with Path Tracing in GLSL.
+Render Cornell Box with Path Tracing in GLSL(version 330 core).
 
 ## Features
 

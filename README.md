@@ -2,6 +2,8 @@
 
 Render Cornell Box with Path Tracing in GLSL(version 330 core).
 
+![](./glsl-cornellbox.jpg)
+
 ## Features
 
 * Unidirectional Path Tracing

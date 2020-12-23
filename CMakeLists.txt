@@ -6,7 +6,6 @@ project(glsl_cornellbox LANGUAGES C CXX)
 add_executable(main src/main.cpp)
 target_compile_features(main PUBLIC cxx_std_17)
 set_target_properties(main PROPERTIES CXX_EXTENSIONS OFF)
-target_compile_options(main PRIVATE -Wall -Wextra)
 
 # deps
 add_subdirectory(external)
@@ -31,6 +30,13 @@ target_link_libraries(main glsl-shader-includes)
 target_link_libraries(main imgui)
 # imgui impl
 target_link_libraries(main imgui_impl)
+
+# compile options
+target_compile_options(main PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
+)
+
 
 # copy shaders to build
 add_custom_command(TARGET main POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/src/shaders $<TARGET_FILE_DIR:main>/shaders COMMENT "copying shaders" VERBATIM)

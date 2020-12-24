@@ -14,6 +14,7 @@
 enum class RenderMode {
   Render,
   Normal,
+  Depth,
   Albedo,
 };
 
@@ -50,6 +51,7 @@ class Renderer {
   Shader pt_shader;
   Shader output_shader;
   Shader normal_shader;
+  Shader depth_shader;
   Shader albedo_shader;
 
   RenderMode mode;
@@ -63,6 +65,7 @@ class Renderer {
         pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
         output_shader({"./shaders/pt.vert", "./shaders/output.frag"}),
         normal_shader({"./shaders/pt.vert", "./shaders/normal.frag"}),
+        depth_shader({"./shaders/pt.vert", "./shaders/depth.frag"}),
         albedo_shader({"./shaders/pt.vert", "./shaders/albedo.frag"}),
         mode(RenderMode::Render) {
     // setup accumulate texture
@@ -146,6 +149,10 @@ class Renderer {
     normal_shader.setUBO("CameraBlock", 1);
     normal_shader.setUBO("PrimitiveBlock", 3);
 
+    depth_shader.setUBO("GlobalBlock", 0);
+    depth_shader.setUBO("CameraBlock", 1);
+    depth_shader.setUBO("PrimitiveBlock", 3);
+
     albedo_shader.setUBO("GlobalBlock", 0);
     albedo_shader.setUBO("CameraBlock", 1);
     albedo_shader.setUBO("MaterialBlock", 2);
@@ -166,6 +173,7 @@ class Renderer {
     pt_shader.destroy();
     output_shader.destroy();
     normal_shader.destroy();
+    depth_shader.destroy();
     albedo_shader.destroy();
 
     rectangle.destroy();
@@ -231,6 +239,10 @@ class Renderer {
 
       case RenderMode::Normal:
         rectangle.draw(normal_shader);
+        break;
+
+      case RenderMode::Depth:
+        rectangle.draw(depth_shader);
         break;
 
       case RenderMode::Albedo:

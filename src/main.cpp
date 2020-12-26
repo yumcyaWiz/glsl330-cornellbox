@@ -121,6 +121,12 @@ int main() {
         renderer->setRenderMode(mode);
       }
 
+      static Integrator integrator = renderer->getIntegrator();
+      if (ImGui::Combo("Integrator", reinterpret_cast<int*>(&integrator),
+                       "PT\0PTNEE\0\0")) {
+        renderer->setIntegrator(integrator);
+      }
+
       ImGui::Text("Samples: %d", renderer->getSamples());
 
       glm::vec3 camPos = renderer->getCameraPosition();

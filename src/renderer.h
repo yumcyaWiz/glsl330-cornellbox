@@ -18,6 +18,11 @@ enum class RenderMode {
   Albedo,
 };
 
+enum class Integrator {
+  PT,
+  PTNEE,
+};
+
 class Renderer {
  private:
   struct alignas(16) GlobalBlock {
@@ -50,12 +55,14 @@ class Renderer {
   Rectangle rectangle;
 
   Shader pt_shader;
+  Shader pt_nee_shader;
   Shader output_shader;
   Shader normal_shader;
   Shader depth_shader;
   Shader albedo_shader;
 
   RenderMode mode;
+  Integrator integrator;
 
   bool clear_flag;
 
@@ -64,6 +71,7 @@ class Renderer {
       : samples(0),
         global({width, height}),
         pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
+        pt_nee_shader({"./shaders/pt.vert", "./shaders/pt-nee.frag"}),
         output_shader({"./shaders/pt.vert", "./shaders/output.frag"}),
         normal_shader({"./shaders/pt.vert", "./shaders/normal.frag"}),
         depth_shader({"./shaders/pt.vert", "./shaders/depth.frag"}),
@@ -151,6 +159,14 @@ class Renderer {
     pt_shader.setUBO("MaterialBlock", 2);
     pt_shader.setUBO("PrimitiveBlock", 3);
 
+    pt_nee_shader.setUniformTexture("accumTexture", accumTexture, 0);
+    pt_nee_shader.setUniformTexture("stateTexture", stateTexture, 1);
+    pt_nee_shader.setUBO("GlobalBlock", 0);
+    pt_nee_shader.setUBO("CameraBlock", 1);
+    pt_nee_shader.setUBO("MaterialBlock", 2);
+    pt_nee_shader.setUBO("PrimitiveBlock", 3);
+    pt_nee_shader.setUBO("LightBlock", 4);
+
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
 
     normal_shader.setUBO("GlobalBlock", 0);
@@ -222,6 +238,12 @@ class Renderer {
     clear();
   }
 
+  Integrator getIntegrator() const { return integrator; }
+  void setIntegrator(const Integrator& integrator) {
+    this->integrator = integrator;
+    clear();
+  }
+
   void render() {
     if (clear_flag) {
       clear();
@@ -232,9 +254,15 @@ class Renderer {
 
     switch (mode) {
       case RenderMode::Render:
-        // path tracing
         glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
-        rectangle.draw(pt_shader);
+        switch (integrator) {
+          case Integrator::PT:
+            rectangle.draw(pt_shader);
+            break;
+          case Integrator::PTNEE:
+            rectangle.draw(pt_nee_shader);
+            break;
+        }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // update samples

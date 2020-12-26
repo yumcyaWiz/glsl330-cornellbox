@@ -23,3 +23,8 @@ const int MAX_N_PRIMITIVES = 100;
 layout(std140) uniform PrimitiveBlock {
   Primitive primitives[MAX_N_PRIMITIVES];
 };
+
+const int MAX_N_LIGHTS = 100;
+layout(std140) uniform LightBlock {
+  Light lights[MAX_N_LIGHTS];
+};

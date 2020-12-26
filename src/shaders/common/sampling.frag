@@ -12,7 +12,7 @@ vec3 samplePlane(in float u, in float v, in vec3 leftCornerPoint, in vec3 right,
 }
 
 vec3 samplePointOnPrimitive(in Primitive primitive, out float pdf_area) {
-    switch(primitive.id) {
+    switch(primitive.type) {
         // Sphere
         case 0:
         break;

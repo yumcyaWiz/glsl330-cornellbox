@@ -23,11 +23,11 @@ bool sampleLight(in Primitive primitive, in IntersectInfo info, out vec3 wi, out
   // test visibility
   wi = normalize(sampledPos - info.hitPos);
   Ray shadowRay = Ray(info.hitPos, wi);
-  IntersectInfo light_info;
-  if(intersect(shadowRay, light_info)) {
+  IntersectInfo shadow_info;
+  if(intersect(shadowRay, shadow_info) && shadow_info.primID == primitive.id) {
     // convert area p.d.f. to solid angle p.d.f.
     float r = distance(info.hitPos, sampledPos);
-    float cos_term = abs(dot(-shadowRay.direction, light_info.hitNormal));
+    float cos_term = abs(dot(-wi, shadow_info.hitNormal));
     pdf = r*r / cos_term * pdf_area;
     return true;
   }
@@ -65,15 +65,15 @@ vec3 computeRadiance(in Ray ray_in) {
 
             // Light Sampling
             if(NEE) {
-              for(int i = 0; i < 1; ++i) {
-                Light light = lights[i];
+              for(int k = 0; k < 1; ++k) {
+                Light light = lights[k];
                 Primitive lightPrimitive = primitives[light.primitive_id];
                 vec3 wi_light;
                 float pdf_light;
                 if(sampleLight(lightPrimitive, info, wi_light, pdf_light)) {
                   vec3 wi_light_local = worldToLocal(wi_light, info.dpdu, info.hitNormal, info.dpdv);
                   float cos_term = abs(wi_light_local.y);
-                  color += throughput * BRDF(wo_local, wi_light_local, hitMaterial.brdf_type, hitMaterial.kd) * cos_term / pdf_light * light.le;
+                  color += throughput * BRDF(wo_local, wi_light_local, hitMaterial.brdf_type, hitMaterial.kd) * cos_term * light.le / pdf_light;
                 }
               }
             }

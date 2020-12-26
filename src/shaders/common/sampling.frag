@@ -6,8 +6,8 @@ vec3 sampleCosineHemisphere(in float u, in float v, out float pdf) {
     return vec3(cos(phi) * sin(theta), y, sin(phi) * sin(theta));
 }
 
-vec3 samplePlane(in float u, in float v, in vec3 leftCornerPoint, in vec3 right, in vec3 up, out float pdf) {
-    pdf = 1.0 / (length(right) * length(up));
+vec3 samplePlane(in float u, in float v, in vec3 leftCornerPoint, in vec3 right, in vec3 up, out float pdf_area) {
+    pdf_area = 1.0 / (length(right) * length(up));
     return leftCornerPoint + u*right + v*up;
 }
 

@@ -298,6 +298,7 @@ class Renderer {
 
     // update texture uniforms
     pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
+    pt_nee_shader.setUniformTexture("accumTexture", accumTexture, 0);
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
 
     // reset samples

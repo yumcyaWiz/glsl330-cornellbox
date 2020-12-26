@@ -45,6 +45,7 @@ class Renderer {
   GLuint cameraUBO;
   GLuint materialUBO;
   GLuint primitiveUBO;
+  GLuint lightUBO;
 
   Rectangle rectangle;
 
@@ -130,10 +131,17 @@ class Renderer {
                  scene.primitives.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+    glGenBuffers(1, &lightUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, lightUBO);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(Light) * 100, scene.lights.data(),
+                 GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, globalUBO);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, cameraUBO);
     glBindBufferBase(GL_UNIFORM_BUFFER, 2, materialUBO);
     glBindBufferBase(GL_UNIFORM_BUFFER, 3, primitiveUBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 4, lightUBO);
 
     // set uniforms
     pt_shader.setUniformTexture("accumTexture", accumTexture, 0);

@@ -21,6 +21,11 @@ struct alignas(16) Material {
   alignas(16) glm::vec3 le;  // 36
 };
 
+struct alignas(16) Light {
+  int primitive_id;
+  alignas(16) glm::vec3 le;
+};
+
 class Scene {
  private:
   void setupCornellBox() {
@@ -118,8 +123,20 @@ class Scene {
   }
 
   void init() {
+    // set primitive id
     for (std::size_t i = 0; i < primitives.size(); ++i) {
       primitives[i].id = i;
+    }
+
+    // set lights
+    for (const auto& primitive : primitives) {
+      const Material& material = materials[primitive.material_id];
+      if (material.le != glm::vec3(0)) {
+        Light light;
+        light.primitive_id = primitive.id;
+        light.le = material.le;
+        lights.push_back(light);
+      }
     }
   }
 
@@ -133,6 +150,8 @@ class Scene {
   std::vector<Material> materials;
 
   void addMaterial(const Material& material) { materials.push_back(material); }
+
+  std::vector<Light> lights;
 
   static Primitive createSphere(const glm::vec3& center, float radius) {
     Primitive ret;

@@ -38,6 +38,11 @@ struct Primitive {
     int material_id;
 };
 
+struct Light {
+    int primitive_id;
+    vec3 le;
+}
+
 struct XORShift32_state {
     uint a;
 };

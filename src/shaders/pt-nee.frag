@@ -18,7 +18,7 @@ layout (location = 1) out uint state;
 bool sampleLight(in Primitive primitive, in IntersectInfo info, out vec3 wi, out float pdf) {
   // sample point on light primitive
   float pdf_area;
-  sampledPos = samplePointOnPrimitive(primitive, pdf_area);
+  vec3 sampledPos = samplePointOnPrimitive(primitive, pdf_area);
 
   // test visibility
   wi = normalize(sampledPos - info.hitPos);
@@ -69,8 +69,8 @@ vec3 computeRadiance(in Ray ray_in) {
                 Primitive light = primitives[lights[0].primitive_id];
                 vec3 wi_light;
                 float pdf_light;
-                if(sampleLight(light, info, wi, pdf)) {
-                  vec3 wi_light_local = worldToLocal(wi, info.dpdu, info.hitNormal, info.dpdv);
+                if(sampleLight(light, info, wi_light, pdf_light)) {
+                  vec3 wi_light_local = worldToLocal(wi_light, info.dpdu, info.hitNormal, info.dpdv);
                   float cos_term = abs(wi_light_local.y);
                   color += throughput * BRDF(wo_local, wi_light_local, hitMaterial.brdf_type, hitMaterial.kd) * cos_term / pdf_light;
                 }

@@ -11,11 +11,11 @@ vec3 BRDF(in vec3 wo, in vec3 wi, in int brdf_type, in vec3 kd) {
         break;
         // mirror
         case 1:
-        return kd / abs(wi.y);
+        return 0;
         break;
         // glass
         case 2:
-        return kd / abs(wi.y);
+        return 0;
         break;
     }
 }

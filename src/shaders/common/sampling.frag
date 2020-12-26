@@ -5,3 +5,19 @@ vec3 sampleCosineHemisphere(in float u, in float v, out float pdf) {
     pdf = y * PI_INV;
     return vec3(cos(phi) * sin(theta), y, sin(phi) * sin(theta));
 }
+
+vec3 samplePlane(in float u, in float v, in vec3 leftCornerPoint, in vec3 right, in vec3 up, out float pdf) {
+    pdf = 1.0 / (length(right) * length(up);
+    return leftCornerPoint + u*right + v*up;
+}
+
+vec3 samplePointOnPrimitive(in Primitive primitive, out float pdf_area) {
+    switch(primitive.id) {
+        // Sphere
+        case 0:
+        break;
+        // Plane
+        case 1:
+        return samplePlane(random(), random(), primitive.leftCornerPoint, primitive.right, primitive.up, pdf_area);
+    }
+}

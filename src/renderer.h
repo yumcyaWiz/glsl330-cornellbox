@@ -76,7 +76,8 @@ class Renderer {
         normal_shader({"./shaders/pt.vert", "./shaders/normal.frag"}),
         depth_shader({"./shaders/pt.vert", "./shaders/depth.frag"}),
         albedo_shader({"./shaders/pt.vert", "./shaders/albedo.frag"}),
-        mode(RenderMode::Render) {
+        mode(RenderMode::Render),
+        integrator(Integrator::PT) {
     // setup accumulate texture
     glGenTextures(1, &accumTexture);
     glBindTexture(GL_TEXTURE_2D, accumTexture);

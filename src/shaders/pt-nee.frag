@@ -32,9 +32,8 @@ bool sampleLight(in Light light, in IntersectInfo info, out vec3 wi, out float p
     pdf = r*r / cos_term * pdf_area;
     return true;
   }
-  else {
-    return false;
-  }
+
+  return false;
 }
 
 vec3 computeRadiance(in Ray ray_in) {
@@ -72,8 +71,9 @@ vec3 computeRadiance(in Ray ray_in) {
                 float pdf_light;
                 if(sampleLight(light, info, wi_light, pdf_light)) {
                   vec3 wi_light_local = worldToLocal(wi_light, info.dpdu, info.hitNormal, info.dpdv);
+                  vec3 brdf = BRDF(wo_local, wi_light_local, hitMaterial.brdf_type, hitMaterial.kd);
                   float cos_term = abs(wi_light_local.y);
-                  color += throughput * BRDF(wo_local, wi_light_local, hitMaterial.brdf_type, hitMaterial.kd) * cos_term * light.le / pdf_light;
+                  color += throughput * brdf * cos_term * light.le / pdf_light;
                 }
               }
             }

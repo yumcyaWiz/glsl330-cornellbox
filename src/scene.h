@@ -124,7 +124,7 @@ class Scene {
 
   void init() {
     // set primitive id
-    for (std::size_t i = 0; i < primitives.size(); ++i) {
+    for (unsigned int i = 0; i < primitives.size(); ++i) {
       primitives[i].id = i;
     }
 

@@ -193,56 +193,50 @@ class Scene {
 
   void init() {
     // set primitive id
-    for (unsigned int i = 0; i < primitives.size(); ++i) {
-      primitives[i].id = i;
+    for (int i = 0; i < n_primitives; ++i) {
+      block.primitives[i].id = i;
     }
 
     // set lights
-    for (const auto& primitive : primitives) {
-      const Material& material = materials[primitive.material_id];
+    int n_lights = 0;
+    for (int i = 0; i < n_primitives; ++i) {
+      const Primitive& primitive = block.primitives[i];
+      const Material& material = block.materials[primitive.material_id];
       if (material.le != glm::vec3(0)) {
         Light light;
         light.primID = primitive.id;
         light.le = material.le;
-        lights.push_back(light);
+
+        block.lights[n_lights] = light;
+        n_lights++;
       }
     }
 
-    // set block
-    block.n_materials = materials.size();
-    block.n_primitives = primitives.size();
-    block.n_lights = lights.size();
-    for (unsigned int i = 0; i < materials.size(); ++i) {
-      block.materials[i] = materials[i];
-    }
-    for (unsigned int i = 0; i < primitives.size(); ++i) {
-      block.primitives[i] = primitives[i];
-    }
-    for (unsigned int i = 0; i < lights.size(); ++i) {
-      block.lights[i] = lights[i];
-    }
+    // set number of materials, primitives, lights
+    block.n_materials = n_materials;
+    block.n_primitives = n_primitives;
+    block.n_lights = n_lights;
   }
 
   void clear() {
-    primitives.clear();
-    materials.clear();
-    lights.clear();
+    n_primitives = 0;
+    n_materials = 0;
   }
 
  public:
+  int n_primitives;
+  int n_materials;
   SceneBlock block;
 
-  std::vector<Primitive> primitives;
-
   void addPrimitive(const Primitive& primitive) {
-    primitives.push_back(primitive);
+    block.primitives[n_primitives] = primitive;
+    n_primitives++;
   }
 
-  std::vector<Material> materials;
-
-  void addMaterial(const Material& material) { materials.push_back(material); }
-
-  std::vector<Light> lights;
+  void addMaterial(const Material& material) {
+    block.materials[n_materials] = material;
+    n_materials++;
+  }
 
   static Primitive createSphere(const glm::vec3& center, float radius) {
     Primitive ret;
@@ -294,7 +288,7 @@ class Scene {
     return ret;
   }
 
-  Scene() {
+  Scene() : n_primitives(0), n_materials(0) {
     setupCornellBoxOriginal();
 
     // initialize scene

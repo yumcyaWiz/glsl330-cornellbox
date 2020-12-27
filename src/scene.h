@@ -26,6 +26,11 @@ struct alignas(16) Light {
   alignas(16) glm::vec3 le;
 };
 
+enum class SceneType {
+  Original,
+  Sphere,
+};
+
 class Scene {
  private:
   void setupCornellBoxOriginal() {
@@ -195,6 +200,12 @@ class Scene {
     }
   }
 
+  void clear() {
+    primitives.clear();
+    materials.clear();
+    lights.clear();
+  }
+
  public:
   std::vector<Primitive> primitives;
 
@@ -260,6 +271,25 @@ class Scene {
 
   Scene() {
     setupCornellBoxOriginal();
+
+    // initialize scene
+    init();
+  }
+
+  void setScene(const SceneType& scene_type) {
+    // clear previous scene
+    clear();
+
+    switch (scene_type) {
+      case SceneType::Original:
+        setupCornellBoxOriginal();
+        break;
+      case SceneType::Sphere:
+        setupCornellSphere();
+        break;
+    }
+
+    // initialize scene
     init();
   }
 };

@@ -127,6 +127,12 @@ int main() {
         renderer->setIntegrator(integrator);
       }
 
+      static SceneType scene_type = renderer->getSceneType();
+      if (ImGui::Combo("Scene", reinterpret_cast<int*>(&scene_type),
+                       "Original\0Sphere\0\0")) {
+        renderer->setSceneType(scene_type);
+      }
+
       ImGui::Text("Samples: %d", renderer->getSamples());
 
       glm::vec3 camPos = renderer->getCameraPosition();

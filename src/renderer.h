@@ -65,6 +65,7 @@ class Renderer {
 
   RenderMode mode;
   Integrator integrator;
+  SceneType scene_type;
 
   bool clear_flag;
 
@@ -80,7 +81,8 @@ class Renderer {
         albedo_shader({"./shaders/pt.vert", "./shaders/albedo.frag"}),
         uv_shader({"./shaders/pt.vert", "./shaders/uv.frag"}),
         mode(RenderMode::Render),
-        integrator(Integrator::PT) {
+        integrator(Integrator::PT),
+        scene_type(SceneType::Original) {
     // setup accumulate texture
     glGenTextures(1, &accumTexture);
     glBindTexture(GL_TEXTURE_2D, accumTexture);
@@ -134,19 +136,19 @@ class Renderer {
     glGenBuffers(1, &materialUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, materialUBO);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(Material) * 100,
-                 scene.materials.data(), GL_STATIC_DRAW);
+                 scene.materials.data(), GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     glGenBuffers(1, &primitiveUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, primitiveUBO);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(Primitive) * 100,
-                 scene.primitives.data(), GL_STATIC_DRAW);
+                 scene.primitives.data(), GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     glGenBuffers(1, &lightUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, lightUBO);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(Light) * 100, scene.lights.data(),
-                 GL_STATIC_DRAW);
+                 GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, globalUBO);
@@ -252,6 +254,32 @@ class Renderer {
   Integrator getIntegrator() const { return integrator; }
   void setIntegrator(const Integrator& integrator) {
     this->integrator = integrator;
+    clear();
+  }
+
+  SceneType getSceneType() const { return scene_type; }
+  void setSceneType(const SceneType& scene_type) {
+    this->scene_type = scene_type;
+
+    // recreate scene
+    scene.setScene(scene_type);
+
+    // send scene data
+    glBindBuffer(GL_UNIFORM_BUFFER, materialUBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0,
+                    sizeof(Material) * scene.materials.size(),
+                    scene.materials.data());
+
+    glBindBuffer(GL_UNIFORM_BUFFER, primitiveUBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0,
+                    sizeof(Primitive) * scene.primitives.size(),
+                    scene.primitives.data());
+
+    glBindBuffer(GL_UNIFORM_BUFFER, lightUBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Light) * scene.lights.size(),
+                    scene.lights.data());
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
     clear();
   }
 

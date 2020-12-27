@@ -17,7 +17,7 @@ layout (location = 1) out uint state;
 
 bool sampleLight(in Light light, in IntersectInfo info, out vec3 wi, out float pdf) {
   // sample point on light primitive
-  Primitive primitive = primitives[light.primitive_id];
+  Primitive primitive = primitives[light.primID];
   float pdf_area;
   vec3 sampledPos = samplePointOnPrimitive(primitive, pdf_area);
 
@@ -25,7 +25,7 @@ bool sampleLight(in Light light, in IntersectInfo info, out vec3 wi, out float p
   wi = normalize(sampledPos - info.hitPos);
   Ray shadowRay = Ray(info.hitPos, wi);
   IntersectInfo shadowInfo;
-  if(intersect(shadowRay, shadowInfo) && shadowInfo.primID == light.primitive_id) {
+  if(intersect(shadowRay, shadowInfo) && shadowInfo.primID == light.primID) {
     // convert area p.d.f. to solid angle p.d.f.
     float r = distance(info.hitPos, sampledPos);
     float cos_term = abs(dot(-wi, shadowInfo.hitNormal));

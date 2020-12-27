@@ -22,7 +22,7 @@ struct alignas(16) Material {
 };
 
 struct alignas(16) Light {
-  int primitive_id;
+  int primID;
   alignas(16) glm::vec3 le;
 };
 
@@ -133,7 +133,7 @@ class Scene {
       const Material& material = materials[primitive.material_id];
       if (material.le != glm::vec3(0)) {
         Light light;
-        light.primitive_id = primitive.id;
+        light.primID = primitive.id;
         light.le = material.le;
         lights.push_back(light);
       }

@@ -39,7 +39,7 @@ struct Primitive {
 };
 
 struct Light {
-    int primitive_id;
+    int primID;
     vec3 le;
 };
 

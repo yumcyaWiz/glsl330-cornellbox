@@ -16,6 +16,7 @@ enum class RenderMode {
   Normal,
   Depth,
   Albedo,
+  UV,
 };
 
 enum class Integrator {
@@ -60,6 +61,7 @@ class Renderer {
   Shader normal_shader;
   Shader depth_shader;
   Shader albedo_shader;
+  Shader uv_shader;
 
   RenderMode mode;
   Integrator integrator;
@@ -76,6 +78,7 @@ class Renderer {
         normal_shader({"./shaders/pt.vert", "./shaders/normal.frag"}),
         depth_shader({"./shaders/pt.vert", "./shaders/depth.frag"}),
         albedo_shader({"./shaders/pt.vert", "./shaders/albedo.frag"}),
+        uv_shader({"./shaders/pt.vert", "./shaders/uv.frag"}),
         mode(RenderMode::Render),
         integrator(Integrator::PT) {
     // setup accumulate texture
@@ -182,6 +185,10 @@ class Renderer {
     albedo_shader.setUBO("CameraBlock", 1);
     albedo_shader.setUBO("MaterialBlock", 2);
     albedo_shader.setUBO("PrimitiveBlock", 3);
+
+    uv_shader.setUBO("GlobalBlock", 0);
+    uv_shader.setUBO("CameraBlock", 1);
+    uv_shader.setUBO("PrimitiveBlock", 3);
   }
 
   void destroy() {
@@ -202,6 +209,7 @@ class Renderer {
     normal_shader.destroy();
     depth_shader.destroy();
     albedo_shader.destroy();
+    uv_shader.destroy();
 
     rectangle.destroy();
   }
@@ -286,6 +294,10 @@ class Renderer {
 
       case RenderMode::Albedo:
         rectangle.draw(albedo_shader);
+        break;
+
+      case RenderMode::UV:
+        rectangle.draw(uv_shader);
         break;
     }
   }

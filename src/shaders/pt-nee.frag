@@ -75,7 +75,7 @@ vec3 computeRadiance(in Ray ray_in) {
                 float pdf_light;
                 if(sampleLight(light, info, wi_light, pdf_light)) {
                   vec3 wi_light_local = worldToLocal(wi_light, info.dpdu, info.hitNormal, info.dpdv);
-                  vec3 brdf = BRDF(wo_local, wi_light_local, hitMaterial.brdf_type, hitMaterial.kd);
+                  vec3 brdf = BRDF(wo_local, wi_light_local, hitMaterial);
                   float cos_term = abs(wi_light_local.y);
                   // prevent firefly
                   if(pdf_light > 0.01) {
@@ -88,7 +88,7 @@ vec3 computeRadiance(in Ray ray_in) {
             // BRDF Sampling
             float pdf_brdf;
             vec3 wi_local;
-            vec3 brdf = sampleBRDF(wo_local, wi_local, hitMaterial.brdf_type, hitMaterial.kd, pdf_brdf);
+            vec3 brdf = sampleBRDF(wo_local, wi_local, hitMaterial, pdf_brdf);
             // prevent NaN
             if(pdf_brdf == 0.0) {
                 break;

@@ -44,7 +44,7 @@ vec3 computeRadiance(in Ray ray_in) {
             // BRDF Sampling
             float pdf;
             vec3 wi_local;
-            vec3 brdf = sampleBRDF(wo_local, wi_local, hitMaterial.brdf_type, hitMaterial.kd, pdf);
+            vec3 brdf = sampleBRDF(wo_local, wi_local, hitMaterial, pdf);
             // prevent NaN
             if(pdf == 0.0) {
                 break;

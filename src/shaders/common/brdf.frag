@@ -3,11 +3,11 @@ float fresnel(in vec3 v, in float n1, in float n2) {
     return F0 + (1.0 - F0) * pow(1.0 - abs(v.y), 5.0);
 }
 
-vec3 BRDF(in vec3 wo, in vec3 wi, in int brdf_type, in vec3 kd) {
-    switch(brdf_type) {
+vec3 BRDF(in vec3 wo, in vec3 wi, in Material material) {
+    switch(material.brdf_type) {
         // lambert
         case 0:
-        return kd * PI_INV;
+        return material.kd * PI_INV;
         break;
         // mirror
         case 1:
@@ -20,19 +20,19 @@ vec3 BRDF(in vec3 wo, in vec3 wi, in int brdf_type, in vec3 kd) {
     }
 }
 
-vec3 sampleBRDF(in vec3 wo, out vec3 wi, in int brdf_type, in vec3 kd, out float pdf) {
-    switch(brdf_type) {
+vec3 sampleBRDF(in vec3 wo, out vec3 wi, in Material material, out float pdf) {
+    switch(material.brdf_type) {
     // lambert
     case 0:
         wi = sampleCosineHemisphere(random(), random(), pdf);
-        return kd * PI_INV;
+        return material.kd * PI_INV;
         break;
 
     // mirror
     case 1:
         pdf = 1.0;
         wi = reflect(-wo, vec3(0, 1, 0));
-        return kd / abs(wi.y);
+        return material.kd / abs(wi.y);
         break;
 
     // glass
@@ -66,7 +66,7 @@ vec3 sampleBRDF(in vec3 wo, out vec3 wi, in int brdf_type, in vec3 kd, out float
             }
         }
 
-        return kd / abs(wi.y);
+        return material.kd / abs(wi.y);
         break;
     }
 }

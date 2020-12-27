@@ -1,4 +1,4 @@
-# glsl-cornellbox
+# glsl330-cornellbox
 
 Render Cornell Box with Path Tracing in GLSL(version 330 core).
 
@@ -7,6 +7,7 @@ Render Cornell Box with Path Tracing in GLSL(version 330 core).
 ## Features
 
 * Unidirectional Path Tracing
+* Path Tracing with Next Event Estimation
 * Lambert, Mirror, Glass Material
 * Interactive GUI
 

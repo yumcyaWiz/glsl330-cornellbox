@@ -23,6 +23,10 @@ bool sampleLight(in Light light, in IntersectInfo info, out vec3 wi, out float p
 
   // test visibility
   wi = normalize(sampledPos - info.hitPos);
+  if(dot(wi, info.hitNormal) < 0.0) {
+    return false;
+  }
+
   Ray shadowRay = Ray(info.hitPos, wi);
   IntersectInfo shadowInfo;
   if(intersect(shadowRay, shadowInfo) && shadowInfo.primID == light.primID) {
@@ -73,7 +77,10 @@ vec3 computeRadiance(in Ray ray_in) {
                   vec3 wi_light_local = worldToLocal(wi_light, info.dpdu, info.hitNormal, info.dpdv);
                   vec3 brdf = BRDF(wo_local, wi_light_local, hitMaterial.brdf_type, hitMaterial.kd);
                   float cos_term = abs(wi_light_local.y);
-                  color += throughput * brdf * cos_term * light.le / pdf_light;
+                  // prevent firefly
+                  if(pdf_light > 0.01) {
+                    color += throughput * brdf * cos_term * light.le / pdf_light;
+                  }
                 }
               }
             }

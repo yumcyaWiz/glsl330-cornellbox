@@ -13,7 +13,7 @@ bool intersect(in Ray ray, out IntersectInfo info) {
     bool hit = false;
     info.t = RAY_TMAX;
 
-    for(int i = 0; i < 16; ++i) {
+    for(int i = 0; i < n_primitives; ++i) {
         IntersectInfo temp;
         if(intersect_each(ray, primitives[i], temp)) {
             if(temp.t < info.t) {

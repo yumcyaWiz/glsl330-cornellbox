@@ -49,9 +49,7 @@ class Renderer {
 
   GLuint globalUBO;
   GLuint cameraUBO;
-  GLuint materialUBO;
-  GLuint primitiveUBO;
-  GLuint lightUBO;
+  GLuint sceneUBO;
 
   Rectangle rectangle;
 
@@ -133,64 +131,46 @@ class Renderer {
                  GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-    glGenBuffers(1, &materialUBO);
-    glBindBuffer(GL_UNIFORM_BUFFER, materialUBO);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(Material) * 100,
-                 scene.materials.data(), GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    glGenBuffers(1, &primitiveUBO);
-    glBindBuffer(GL_UNIFORM_BUFFER, primitiveUBO);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(Primitive) * 100,
-                 scene.primitives.data(), GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    glGenBuffers(1, &lightUBO);
-    glBindBuffer(GL_UNIFORM_BUFFER, lightUBO);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(Light) * 100, scene.lights.data(),
+    glGenBuffers(1, &sceneUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, sceneUBO);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(SceneBlock), &scene.block,
                  GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, globalUBO);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, cameraUBO);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 2, materialUBO);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 3, primitiveUBO);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 4, lightUBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, sceneUBO);
 
     // set uniforms
     pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
     pt_shader.setUniformTexture("stateTexture", stateTexture, 1);
     pt_shader.setUBO("GlobalBlock", 0);
     pt_shader.setUBO("CameraBlock", 1);
-    pt_shader.setUBO("MaterialBlock", 2);
-    pt_shader.setUBO("PrimitiveBlock", 3);
+    pt_shader.setUBO("SceneBlock", 2);
 
     pt_nee_shader.setUniformTexture("accumTexture", accumTexture, 0);
     pt_nee_shader.setUniformTexture("stateTexture", stateTexture, 1);
     pt_nee_shader.setUBO("GlobalBlock", 0);
     pt_nee_shader.setUBO("CameraBlock", 1);
-    pt_nee_shader.setUBO("MaterialBlock", 2);
-    pt_nee_shader.setUBO("PrimitiveBlock", 3);
-    pt_nee_shader.setUBO("LightBlock", 4);
+    pt_nee_shader.setUBO("SceneBlock", 2);
 
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
 
     normal_shader.setUBO("GlobalBlock", 0);
     normal_shader.setUBO("CameraBlock", 1);
-    normal_shader.setUBO("PrimitiveBlock", 3);
+    normal_shader.setUBO("SceneBlock", 2);
 
     depth_shader.setUBO("GlobalBlock", 0);
     depth_shader.setUBO("CameraBlock", 1);
-    depth_shader.setUBO("PrimitiveBlock", 3);
+    depth_shader.setUBO("SceneBlock", 2);
 
     albedo_shader.setUBO("GlobalBlock", 0);
     albedo_shader.setUBO("CameraBlock", 1);
-    albedo_shader.setUBO("MaterialBlock", 2);
-    albedo_shader.setUBO("PrimitiveBlock", 3);
+    albedo_shader.setUBO("SceneBlock", 2);
 
     uv_shader.setUBO("GlobalBlock", 0);
     uv_shader.setUBO("CameraBlock", 1);
-    uv_shader.setUBO("PrimitiveBlock", 3);
+    uv_shader.setUBO("SceneBlock", 2);
   }
 
   void destroy() {
@@ -201,9 +181,7 @@ class Renderer {
 
     glDeleteBuffers(1, &globalUBO);
     glDeleteBuffers(1, &cameraUBO);
-    glDeleteBuffers(1, &materialUBO);
-    glDeleteBuffers(1, &primitiveUBO);
-    glDeleteBuffers(1, &lightUBO);
+    glDeleteBuffers(1, &sceneUBO);
 
     pt_shader.destroy();
     pt_nee_shader.destroy();
@@ -265,19 +243,8 @@ class Renderer {
     scene.setScene(scene_type);
 
     // send scene data
-    glBindBuffer(GL_UNIFORM_BUFFER, materialUBO);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0,
-                    sizeof(Material) * scene.materials.size(),
-                    scene.materials.data());
-
-    glBindBuffer(GL_UNIFORM_BUFFER, primitiveUBO);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0,
-                    sizeof(Primitive) * scene.primitives.size(),
-                    scene.primitives.data());
-
-    glBindBuffer(GL_UNIFORM_BUFFER, lightUBO);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Light) * scene.lights.size(),
-                    scene.lights.data());
+    glBindBuffer(GL_UNIFORM_BUFFER, sceneUBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(SceneBlock), &scene.block);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     clear();

@@ -26,6 +26,15 @@ struct alignas(16) Light {
   alignas(16) glm::vec3 le;
 };
 
+struct alignas(16) SceneBlock {
+  int n_materials;
+  int n_primitives;
+  int n_lights;
+  Material materials[100];
+  Primitive primitives[100];
+  Light lights[100];
+};
+
 enum class SceneType {
   Original,
   Sphere,
@@ -198,6 +207,20 @@ class Scene {
         lights.push_back(light);
       }
     }
+
+    // set block
+    block.n_materials = materials.size();
+    block.n_primitives = primitives.size();
+    block.n_lights = lights.size();
+    for (unsigned int i = 0; i < materials.size(); ++i) {
+      block.materials[i] = materials[i];
+    }
+    for (unsigned int i = 0; i < primitives.size(); ++i) {
+      block.primitives[i] = primitives[i];
+    }
+    for (unsigned int i = 0; i < lights.size(); ++i) {
+      block.lights[i] = lights[i];
+    }
   }
 
   void clear() {
@@ -207,6 +230,8 @@ class Scene {
   }
 
  public:
+  SceneBlock block;
+
   std::vector<Primitive> primitives;
 
   void addPrimitive(const Primitive& primitive) {

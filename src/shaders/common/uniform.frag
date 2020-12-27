@@ -15,16 +15,13 @@ layout(std140) uniform CameraBlock {
 } camera;
 
 const int MAX_N_MATERIALS = 100;
-layout(std140) uniform MaterialBlock {
-  Material materials[MAX_N_MATERIALS];
-};
-
 const int MAX_N_PRIMITIVES = 100;
-layout(std140) uniform PrimitiveBlock {
-  Primitive primitives[MAX_N_PRIMITIVES];
-};
-
 const int MAX_N_LIGHTS = 100;
-layout(std140) uniform LightBlock {
+layout(std140) uniform SceneBlock {
+  int n_materials;
+  int n_primitives;
+  int n_lights;
+  Material materials[MAX_N_MATERIALS];
+  Primitive primitives[MAX_N_PRIMITIVES];
   Light lights[MAX_N_LIGHTS];
 };

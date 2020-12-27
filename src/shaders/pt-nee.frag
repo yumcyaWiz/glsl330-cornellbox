@@ -42,7 +42,7 @@ vec3 computeRadiance(in Ray ray_in) {
     const float russian_roulette_prob = 0.99;
     vec3 color = vec3(0);
     vec3 throughput = vec3(1);
-    bool NEE = false;
+    bool NEE = true;
     for(int i = 0; i < MAX_DEPTH; ++i) {
         // russian roulette
         if(random() >= russian_roulette_prob) {

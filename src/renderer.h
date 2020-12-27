@@ -194,8 +194,10 @@ class Renderer {
     glDeleteBuffers(1, &cameraUBO);
     glDeleteBuffers(1, &materialUBO);
     glDeleteBuffers(1, &primitiveUBO);
+    glDeleteBuffers(1, &lightUBO);
 
     pt_shader.destroy();
+    pt_nee_shader.destroy();
     output_shader.destroy();
     normal_shader.destroy();
     depth_shader.destroy();

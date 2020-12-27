@@ -27,7 +27,7 @@ bool sampleLight(in Light light, in IntersectInfo info, out vec3 wi, out float p
   IntersectInfo shadowInfo;
   if(intersect(shadowRay, shadowInfo) && shadowInfo.primID == light.primID) {
     // convert area p.d.f. to solid angle p.d.f.
-    float r = distance(info.hitPos, sampledPos);
+    float r = shadowInfo.t;
     float cos_term = abs(dot(-wi, shadowInfo.hitNormal));
     pdf = r*r / cos_term * pdf_area;
     return true;

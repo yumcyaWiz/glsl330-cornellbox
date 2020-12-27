@@ -46,7 +46,7 @@ vec3 computeRadiance(in Ray ray_in) {
     const float russian_roulette_prob = 0.99;
     vec3 color = vec3(0);
     vec3 throughput = vec3(1);
-    bool NEE = true;
+    bool is_previous_specular = false;
     for(int i = 0; i < MAX_DEPTH; ++i) {
         // russian roulette
         if(random() >= russian_roulette_prob) {
@@ -62,13 +62,13 @@ vec3 computeRadiance(in Ray ray_in) {
             vec3 wo_local = worldToLocal(wo, info.dpdu, info.hitNormal, info.dpdv);
 
             // Le 
-            if((!NEE || i == 0) && any(greaterThan(hitMaterial.le, vec3(0)))) {
+            if((is_previous_specular || i == 0) && any(greaterThan(hitMaterial.le, vec3(0)))) {
                 color += throughput * hitMaterial.le;
                 break;
             }
 
             // Light Sampling
-            if(NEE) {
+            if(hitMaterial.brdf_type == 0) {
               for(int k = 0; k < 1; ++k) {
                 Light light = lights[k];
                 vec3 wi_light;
@@ -102,8 +102,7 @@ vec3 computeRadiance(in Ray ray_in) {
             // set next ray
             ray = Ray(info.hitPos, wi);
 
-            // do NEE at next ray or not
-            NEE = (hitMaterial.brdf_type == 0);
+            is_previous_specular = (hitMaterial.brdf_type != 0);
         }
         else {
             color += throughput * vec3(0);

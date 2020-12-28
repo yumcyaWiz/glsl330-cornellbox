@@ -69,7 +69,7 @@ vec3 computeRadiance(in Ray ray_in) {
 
             // Light Sampling
             if(hitMaterial.brdf_type == 0) {
-              for(int k = 0; k < 1; ++k) {
+              for(int k = 0; k < n_lights; ++k) {
                 Light light = lights[k];
                 vec3 wi_light;
                 float pdf_light;

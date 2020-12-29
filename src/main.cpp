@@ -47,10 +47,6 @@ void handleInput(GLFWwindow* window, const ImGuiIO& io) {
 }
 
 int main() {
-  // default width, height
-  const int width = 512;
-  const int height = 512;
-
   // init glfw
   if (!glfwInit()) {
     std::cerr << "failed to initialize GLFW" << std::endl;
@@ -68,7 +64,7 @@ int main() {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);  // Required on Mac
   GLFWwindow* window =
-      glfwCreateWindow(width, height, "GLSL CornellBox", nullptr, nullptr);
+      glfwCreateWindow(1280, 720, "GLSL CornellBox", nullptr, nullptr);
   if (!window) {
     std::cerr << "failed to create window" << std::endl;
     std::exit(EXIT_FAILURE);
@@ -98,7 +94,7 @@ int main() {
   ImGui_ImplOpenGL3_Init("#version 330 core");
 
   // setup renderer
-  renderer = std::make_unique<Renderer>(width, height);
+  renderer = std::make_unique<Renderer>(512, 512);
 
   // main app loop
   while (!glfwWindowShouldClose(window)) {

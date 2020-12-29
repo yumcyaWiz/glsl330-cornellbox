@@ -74,7 +74,9 @@ int main() {
     std::exit(EXIT_FAILURE);
   }
   glfwMakeContextCurrent(window);
-  glfwSwapInterval(1);
+
+  // disable v-sync
+  glfwSwapInterval(0);
 
   // initialize glad
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {

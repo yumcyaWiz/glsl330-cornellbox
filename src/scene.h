@@ -38,6 +38,7 @@ struct alignas(16) SceneBlock {
 enum class SceneType {
   Original,
   Sphere,
+  Indirect,
 };
 
 class Scene {
@@ -191,6 +192,79 @@ class Scene {
     addPrimitive(light);
   }
 
+  void setupCornellIndirect() {
+    // setup material
+    const Material white = createDiffuse(glm::vec3(0.8));
+    addMaterial(white);
+    const Material red = createDiffuse(glm::vec3(0.8, 0.05, 0.05));
+    addMaterial(red);
+    const Material green = createDiffuse(glm::vec3(0.05, 0.8, 0.05));
+    addMaterial(green);
+    const Material mirror = createMirror(glm::vec3(1.0));
+    addMaterial(mirror);
+    const Material glass = createGlass(glm::vec3(1.0));
+    addMaterial(glass);
+    const Material lightm = createLight(glm::vec3(34, 19, 10));
+    addMaterial(lightm);
+
+    // setup primitives
+    Primitive floor =
+        createPlane(glm::vec3(0), glm::vec3(0, 0, 559.2), glm::vec3(556, 0, 0));
+    floor.material_id = 0;
+    addPrimitive(floor);
+
+    Primitive rightWall = createPlane(glm::vec3(0), glm::vec3(0, 548.8, 0),
+                                      glm::vec3(0, 0, 559.2));
+    rightWall.material_id = 1;
+    addPrimitive(rightWall);
+
+    Primitive leftWall = createPlane(
+        glm::vec3(556, 0, 0), glm::vec3(0, 0, 559.2), glm::vec3(0, 548.8, 0));
+    leftWall.material_id = 2;
+    addPrimitive(leftWall);
+
+    Primitive ceil = createPlane(glm::vec3(0, 548.8, 0), glm::vec3(556, 0, 0),
+                                 glm::vec3(0, 0, 559.2));
+    ceil.material_id = 0;
+    addPrimitive(ceil);
+
+    Primitive backWall = createPlane(
+        glm::vec3(0, 0, 559.2), glm::vec3(0, 500, 0), glm::vec3(556, 0, 0));
+    backWall.material_id = 0;
+    addPrimitive(backWall);
+
+    Primitive lightWall1 = createPlane(
+        glm::vec3(0, 500, 559.2), glm::vec3(0, 0, 48.8), glm::vec3(0, 48.8, 0));
+    addPrimitive(lightWall1);
+
+    Primitive lightWall2 =
+        createPlane(glm::vec3(556, 500, 559.2), glm::vec3(0, 0, 48.8),
+                    glm::vec3(0, 48.8, 0));
+    addPrimitive(lightWall2);
+
+    Primitive lightWall3 =
+        createPlane(glm::vec3(0, 548.8, 559.2), glm::vec3(556, 0, 0),
+                    glm::vec3(0, 0, 48.8));
+    addPrimitive(lightWall3);
+
+    Primitive lightWall4 = createPlane(
+        glm::vec3(0, 500, 608), glm::vec3(556, 0, 0), glm::vec3(0, 48.8, 0));
+    addPrimitive(lightWall4);
+
+    Primitive sphere1 = createSphere(glm::vec3(186, 100.0, 169.5), 100.0);
+    sphere1.material_id = 3;
+    addPrimitive(sphere1);
+
+    Primitive sphere2 = createSphere(glm::vec3(393, 120.0, 351), 120.0);
+    sphere2.material_id = 4;
+    addPrimitive(sphere2);
+
+    Primitive light = createPlane(glm::vec3(0, 500, 559.2),
+                                  glm::vec3(0, 0, 48.8), glm::vec3(556, 0, 0));
+    light.material_id = 5;
+    addPrimitive(light);
+  }
+
   void init() {
     // set primitive id
     for (int i = 0; i < n_primitives; ++i) {
@@ -305,6 +379,9 @@ class Scene {
         break;
       case SceneType::Sphere:
         setupCornellSphere();
+        break;
+      case SceneType::Indirect:
+        setupCornellIndirect();
         break;
     }
 

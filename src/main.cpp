@@ -127,7 +127,7 @@ int main() {
 
       static SceneType scene_type = renderer->getSceneType();
       if (ImGui::Combo("Scene", reinterpret_cast<int*>(&scene_type),
-                       "Original\0Sphere\0\0")) {
+                       "Original\0Sphere\0Indirect\0")) {
         renderer->setSceneType(scene_type);
       }
 

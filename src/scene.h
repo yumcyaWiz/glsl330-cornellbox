@@ -241,7 +241,7 @@ class Scene {
     sphere2.material_id = 4;
     addPrimitive(sphere2);
 
-    Primitive light = createPlane(glm::vec3(0, 800, 459.2),
+    Primitive light = createPlane(glm::vec3(0, 800, 259.2),
                                   glm::vec3(556, 0, 0), glm::vec3(0, 0, 100));
     light.material_id = 5;
     addPrimitive(light);

@@ -143,6 +143,12 @@ int main() {
       }
 
       ImGui::Text("FPS: %.1f", io.Framerate);
+
+      ImGui::Separator();
+
+      ImGui::Text("Camera Rotate: [MMB Drag]");
+      ImGui::Text("Camera Move: [LShift] + [MMB Drag]");
+      ImGui::Text("Camera Zoom: [LCtrl] + [MMB Drag]");
     }
     ImGui::End();
 

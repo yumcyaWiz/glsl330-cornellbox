@@ -204,7 +204,8 @@ class Scene {
     addMaterial(mirror);
     const Material glass = createGlass(glm::vec3(1.0));
     addMaterial(glass);
-    const Material lightm = createLight(glm::vec3(34, 32.26, 31.6));
+    const Material lightm =
+        createLight(glm::vec3(1.5f) * glm::vec3(34, 32.26, 31.6));
     addMaterial(lightm);
 
     // setup primitives
@@ -233,6 +234,18 @@ class Scene {
     backWall.material_id = 0;
     addPrimitive(backWall);
 
+    const int n_ceil_sets = 5;
+    for (int i = 0; i < n_ceil_sets; ++i) {
+      Primitive ceil2 =
+          createPlane(glm::vec3(3 * 556.0f / (3 * n_ceil_sets + 1) * i +
+                                    556.0f / (3 * n_ceil_sets + 1),
+                                548.8, 459.2),
+                      glm::vec3(2.0f * 556.0f / (3 * n_ceil_sets + 1), 0, 0),
+                      glm::vec3(0, 0, 100));
+      ceil2.material_id = 0;
+      addPrimitive(ceil2);
+    }
+
     Primitive sphere1 = createSphere(glm::vec3(186, 100.0, 169.5), 100.0);
     sphere1.material_id = 3;
     addPrimitive(sphere1);
@@ -241,8 +254,9 @@ class Scene {
     sphere2.material_id = 4;
     addPrimitive(sphere2);
 
-    Primitive light = createPlane(glm::vec3(0, 800, 259.2),
-                                  glm::vec3(556, 0, 0), glm::vec3(0, 0, 100));
+    Primitive light =
+        createPlane(glm::vec3(0, 750, 259.2), glm::vec3(556, 0, 0),
+                    glm::vec3(0, 70.71, 70.71));
     light.material_id = 5;
     addPrimitive(light);
   }

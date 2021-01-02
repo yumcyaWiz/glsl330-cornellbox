@@ -205,7 +205,7 @@ class Scene {
     const Material glass = createGlass(glm::vec3(1.0));
     addMaterial(glass);
     const Material lightm =
-        createLight(glm::vec3(1.5f) * glm::vec3(34, 32.26, 31.6));
+        createLight(glm::vec3(5.0f) * glm::vec3(34, 32.26, 31.6));
     addMaterial(lightm);
 
     // setup primitives

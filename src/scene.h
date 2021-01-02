@@ -204,7 +204,7 @@ class Scene {
     addMaterial(mirror);
     const Material glass = createGlass(glm::vec3(1.0));
     addMaterial(glass);
-    const Material lightm = createLight(glm::vec3(34, 19, 10));
+    const Material lightm = createLight(glm::vec3(34, 32.26, 31.6));
     addMaterial(lightm);
 
     // setup primitives
@@ -224,32 +224,14 @@ class Scene {
     addPrimitive(leftWall);
 
     Primitive ceil = createPlane(glm::vec3(0, 548.8, 0), glm::vec3(556, 0, 0),
-                                 glm::vec3(0, 0, 559.2));
+                                 glm::vec3(0, 0, 459.2));
     ceil.material_id = 0;
     addPrimitive(ceil);
 
     Primitive backWall = createPlane(
-        glm::vec3(0, 0, 559.2), glm::vec3(0, 500, 0), glm::vec3(556, 0, 0));
+        glm::vec3(0, 0, 559.2), glm::vec3(0, 548.8, 0), glm::vec3(556, 0, 0));
     backWall.material_id = 0;
     addPrimitive(backWall);
-
-    Primitive lightWall1 = createPlane(
-        glm::vec3(0, 500, 559.2), glm::vec3(0, 0, 48.8), glm::vec3(0, 48.8, 0));
-    addPrimitive(lightWall1);
-
-    Primitive lightWall2 =
-        createPlane(glm::vec3(556, 500, 559.2), glm::vec3(0, 0, 48.8),
-                    glm::vec3(0, 48.8, 0));
-    addPrimitive(lightWall2);
-
-    Primitive lightWall3 =
-        createPlane(glm::vec3(0, 548.8, 559.2), glm::vec3(556, 0, 0),
-                    glm::vec3(0, 0, 48.8));
-    addPrimitive(lightWall3);
-
-    Primitive lightWall4 = createPlane(
-        glm::vec3(0, 500, 608), glm::vec3(556, 0, 0), glm::vec3(0, 48.8, 0));
-    addPrimitive(lightWall4);
 
     Primitive sphere1 = createSphere(glm::vec3(186, 100.0, 169.5), 100.0);
     sphere1.material_id = 3;
@@ -259,8 +241,8 @@ class Scene {
     sphere2.material_id = 4;
     addPrimitive(sphere2);
 
-    Primitive light = createPlane(glm::vec3(0, 500, 559.2),
-                                  glm::vec3(0, 0, 48.8), glm::vec3(556, 0, 0));
+    Primitive light = createPlane(glm::vec3(0, 800, 459.2),
+                                  glm::vec3(556, 0, 0), glm::vec3(0, 0, 100));
     light.material_id = 5;
     addPrimitive(light);
   }

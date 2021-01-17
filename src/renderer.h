@@ -55,6 +55,7 @@ class Renderer {
 
   Shader pt_shader;
   Shader pt_nee_shader;
+  Shader bdpt_shader;
   Shader output_shader;
   Shader normal_shader;
   Shader depth_shader;
@@ -73,6 +74,7 @@ class Renderer {
         global({width, height}),
         pt_shader({"./shaders/pt.vert", "./shaders/pt.frag"}),
         pt_nee_shader({"./shaders/pt.vert", "./shaders/pt-nee.frag"}),
+        bdpt_shader({"./shaders/pt.vert", "./shaders/bdpt.frag"}),
         output_shader({"./shaders/pt.vert", "./shaders/output.frag"}),
         normal_shader({"./shaders/pt.vert", "./shaders/normal.frag"}),
         depth_shader({"./shaders/pt.vert", "./shaders/depth.frag"}),
@@ -154,6 +156,12 @@ class Renderer {
     pt_nee_shader.setUBO("CameraBlock", 1);
     pt_nee_shader.setUBO("SceneBlock", 2);
 
+    bdpt_shader.setUniformTexture("accumTexture", accumTexture, 0);
+    bdpt_shader.setUniformTexture("stateTexture", stateTexture, 1);
+    bdpt_shader.setUBO("GlobalBlock", 0);
+    bdpt_shader.setUBO("CameraBlock", 1);
+    bdpt_shader.setUBO("SceneBlock", 2);
+
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
 
     normal_shader.setUBO("GlobalBlock", 0);
@@ -185,6 +193,7 @@ class Renderer {
 
     pt_shader.destroy();
     pt_nee_shader.destroy();
+    bdpt_shader.destroy();
     output_shader.destroy();
     normal_shader.destroy();
     depth_shader.destroy();
@@ -308,6 +317,7 @@ class Renderer {
     // update texture uniforms
     pt_shader.setUniformTexture("accumTexture", accumTexture, 0);
     pt_nee_shader.setUniformTexture("accumTexture", accumTexture, 0);
+    bdpt_shader.setUniformTexture("accumTexture", accumTexture, 0);
     output_shader.setUniformTexture("accumTexture", accumTexture, 0);
 
     // reset samples

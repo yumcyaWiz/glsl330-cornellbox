@@ -19,32 +19,79 @@ struct VertexInfo {
   vec3 x; // position
   vec3 n; // normal
   vec3 alpha; // throughput
-  int material_id;
+  int material_id; // material ID
 };
 
-VertexInfo eyeSubpath[MAX_DEPTH]; // subpath from eye
-VertexInfo lightSubpath[MAX_DEPTH]; // subpath from light
+VertexInfo lightSubpath[MAX_DEPTH + 1]; // subpath from light
+VertexInfo eyeSubpath[MAX_DEPTH + 1]; // subpath from eye
 
 // generate subpath from light
-void generateLightSubpath() {
+// return: number of vertices
+int generateLightSubpath() {
   // choose a light randomly
   Light light = lights[int(n_lights * random())];
 
   // sample point on light
   float pdf_area;
-  vec3 n0;
-  vec3 x0 = samplePointOnPrimitive(primitives[light.primID], n0, pdf_area);
+  vec3 normal;
+  vec3 dpdu;
+  vec3 dpdv;
+  vec3 x0 = samplePointOnPrimitive(primitives[light.primID], normal, dpdu, dpdv, pdf_area);
 
   lightSubpath[0].x = x0;
   lightSubpath[0].n = n0;
-  lightSubpath[0].alpha = light.le / pdf_area;
+  lightSubpath[0].alpha = (n_lights * light.le) / pdf_area;
+
+  // sample direction from light
+  float pdf_solid;
+  vec3 wi = localToWorld(sampleHemisphere(random(), random(), pdf_solid), dpdu, normal, dpdv);
+
+  Ray ray = Ray(x0, wi);
+  float rr_prob = 1; // russian roulette probability
+  int n_L = 1; // number of vertices of light subpath
+  vec3 brdf = vec3(1); // BRDF
 
   // generate path
-  float russian_roulette_prob = 1;
-  vec3 throughput = vec3(1);
+  for(int i = 1; i <= MAX_DEPTH; ++i) {
+    // russian roulette
+    if(random() >= rr_prob) {
+      break;
+    }
+    throughput /= rr_prob;
 
-  for(int i = 0; i < MAX_DEPTH; ++i) {
+    IntersectInfo info;
+    if(intersect(ray, info)) {
+      n_L++;
+
+      Primitive hitPrimitive = primitives[info.primID];
+      Material hitMaterial = materials[hitPrimitive.material_id];
+
+      // set vertex info
+      lightSubpath[i].x = info.hitPos;
+      lightSubpath[i].n = info.hitNormal;
+      lightSubpath[i].material_id = hitMaterial.material_id;
+
+      // compute alpha
+      lightSubpath[i].alpha = abs(dot(lightSubpath[i - 1].n, ray.direction)) / pdf_solid * brdf * lightSubpath[i - 1].alpha;
+
+      // BRDF sampling
+      vec3 wi_local = worldToLocal(wi, info.dpdu, info.hitNormal, info.dpdv);
+      vec3 wo_local;
+      brdf = sampleBRDF(wi_local, wo_local, hitMaterial, pdf_solid);
+      vec3 wo = localToWorld(wo_local, info.dpdu, info.hitNormal, info.dpdv);
+
+      // update russian roulette probability
+      rr_prob *= 0.99;
+
+      // set next ray
+      ray = Ray(info.hitPos, wo);
+    }
+    else {
+      break;
+    }
   }
+
+  return n_L;
 }
 
 // generate subpath from eye

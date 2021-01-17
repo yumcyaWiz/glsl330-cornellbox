@@ -18,9 +18,10 @@ layout (location = 1) out uint state;
 vec3 computeRadiance(in Ray ray_in) {
     Ray ray = ray_in;
 
-    const float russian_roulette_prob = 0.99;
+    float russian_roulette_prob = 1;
     vec3 color = vec3(0);
     vec3 throughput = vec3(1);
+
     for(int i = 0; i < MAX_DEPTH; ++i) {
         // russian roulette
         if(random() >= russian_roulette_prob) {
@@ -55,6 +56,10 @@ vec3 computeRadiance(in Ray ray_in) {
             float cos_term = abs(wi_local.y);
             throughput *= brdf * cos_term / pdf;
 
+            // update russian roulette probability
+            russian_roulette_prob = min(max(max(throughput.x, throughput.y), throughput.z), 1.0);
+
+            // set next ray
             ray = Ray(info.hitPos, wi);
         }
         else {

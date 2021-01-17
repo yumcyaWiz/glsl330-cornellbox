@@ -43,7 +43,7 @@ bool sampleLight(in Light light, in IntersectInfo info, out vec3 wi, out float p
 vec3 computeRadiance(in Ray ray_in) {
     Ray ray = ray_in;
 
-    const float russian_roulette_prob = 0.99;
+    float russian_roulette_prob = 1;
     vec3 color = vec3(0);
     vec3 throughput = vec3(1);
     bool is_previous_specular = false;
@@ -98,6 +98,9 @@ vec3 computeRadiance(in Ray ray_in) {
             // update throughput
             float cos_term = abs(wi_local.y);
             throughput *= brdf * cos_term / pdf_brdf;
+
+            // update russian roulette probability
+            russian_roulette_prob = min(max(max(throughput.x, throughput.y), throughput.z), 1.0);
 
             // set next ray
             ray = Ray(info.hitPos, wi);

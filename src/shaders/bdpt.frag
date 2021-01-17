@@ -32,10 +32,12 @@ void generateLightSubpath() {
 
   // sample point on light
   float pdf_area;
-  vec3 x0 = samplePointOnPrimitive(primitives[light.primID], pdf_area);
+  vec3 n0;
+  vec3 x0 = samplePointOnPrimitive(primitives[light.primID], n0, pdf_area);
 
   lightSubpath[0].x = x0;
-  lightSubpath[0].n = 
+  lightSubpath[0].n = n0;
+  lightSubpath[0].alpha = light.le / pdf_area;
 
   // generate path
   float russian_roulette_prob = 1;

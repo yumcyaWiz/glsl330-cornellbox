@@ -19,8 +19,10 @@ bool sampleLight(in Light light, in IntersectInfo info, out vec3 wi, out float p
   // sample point on light primitive
   Primitive primitive = primitives[light.primID];
   vec3 normal;
+  vec3 dpdu;
+  vec3 dpdv;
   float pdf_area;
-  vec3 sampledPos = samplePointOnPrimitive(primitive, normal, pdf_area);
+  vec3 sampledPos = samplePointOnPrimitive(primitive, normal, dpdu, dpdv, pdf_area);
 
   // test visibility
   wi = normalize(sampledPos - info.hitPos);

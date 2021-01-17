@@ -15,6 +15,40 @@ in vec2 texCoord;
 layout (location = 0) out vec3 color;
 layout (location = 1) out uint state;
 
+struct VertexInfo {
+  vec3 x; // position
+  vec3 n; // normal
+  vec3 alpha; // throughput
+  int material_id;
+};
+
+VertexInfo eyeSubpath[MAX_DEPTH]; // subpath from eye
+VertexInfo lightSubpath[MAX_DEPTH]; // subpath from light
+
+// generate subpath from light
+void generateLightSubpath() {
+  // choose a light randomly
+  Light light = lights[int(n_lights * random())];
+
+  // sample point on light
+  float pdf_area;
+  vec3 x0 = samplePointOnPrimitive(primitives[light.primID], pdf_area);
+
+  lightSubpath[0].x = x0;
+  lightSubpath[0].n = 
+
+  // generate path
+  float russian_roulette_prob = 1;
+  vec3 throughput = vec3(1);
+
+  for(int i = 0; i < MAX_DEPTH; ++i) {
+  }
+}
+
+// generate subpath from eye
+void generateEyeSubpath(in vec2 uv) {
+}
+
 vec3 computeRadiance(in Ray ray_in) {
   return vec3(0);
 }

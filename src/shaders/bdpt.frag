@@ -39,7 +39,7 @@ int generateLightSubpath() {
   vec3 x0 = samplePointOnPrimitive(primitives[light.primID], normal, dpdu, dpdv, pdf_area);
 
   lightSubpath[0].x = x0;
-  lightSubpath[0].n = n0;
+  lightSubpath[0].n = normal;
   lightSubpath[0].alpha = (n_lights * light.le) / pdf_area;
 
   // sample direction from light
@@ -57,7 +57,6 @@ int generateLightSubpath() {
     if(random() >= rr_prob) {
       break;
     }
-    throughput /= rr_prob;
 
     IntersectInfo info;
     if(intersect(ray, info)) {
@@ -69,10 +68,10 @@ int generateLightSubpath() {
       // set vertex info
       lightSubpath[i].x = info.hitPos;
       lightSubpath[i].n = info.hitNormal;
-      lightSubpath[i].material_id = hitMaterial.material_id;
+      lightSubpath[i].material_id = hitPrimitive.material_id;
 
       // compute alpha
-      lightSubpath[i].alpha = abs(dot(lightSubpath[i - 1].n, ray.direction)) / pdf_solid * brdf * lightSubpath[i - 1].alpha;
+      lightSubpath[i].alpha = abs(dot(lightSubpath[i - 1].n, ray.direction)) / (rr_prob * pdf_solid) * brdf * lightSubpath[i - 1].alpha;
 
       // BRDF sampling
       vec3 wi_local = worldToLocal(wi, info.dpdu, info.hitNormal, info.dpdv);

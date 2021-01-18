@@ -26,7 +26,7 @@ VertexInfo lightSubpath[MAX_DEPTH + 1]; // subpath from light
 VertexInfo eyeSubpath[MAX_DEPTH + 1]; // subpath from eye
 
 // generate subpath from light
-// return: number of vertices
+// return: number of vertices of generated subpath
 int generateLightSubpath() {
   // choose a light randomly
   Light light = lights[int(n_lights * random())];
@@ -44,9 +44,9 @@ int generateLightSubpath() {
 
   // sample direction from light
   float pdf_solid;
-  vec3 wi = localToWorld(sampleHemisphere(random(), random(), pdf_solid), dpdu, normal, dpdv);
+  vec3 w0 = localToWorld(sampleHemisphere(random(), random(), pdf_solid), dpdu, normal, dpdv);
 
-  Ray ray = Ray(x0, wi);
+  Ray ray = Ray(x0, w0);
   float rr_prob = 1; // russian roulette probability
   int n_L = 1; // number of vertices of light subpath
   vec3 brdf = vec3(1); // BRDF
@@ -60,8 +60,10 @@ int generateLightSubpath() {
 
     IntersectInfo info;
     if(intersect(ray, info)) {
+      // update number of vertices
       n_L++;
 
+      // hit surface info
       Primitive hitPrimitive = primitives[info.primID];
       Material hitMaterial = materials[hitPrimitive.material_id];
 
@@ -74,7 +76,7 @@ int generateLightSubpath() {
       lightSubpath[i].alpha = abs(dot(lightSubpath[i - 1].n, ray.direction)) / (rr_prob * pdf_solid) * brdf * lightSubpath[i - 1].alpha;
 
       // BRDF sampling
-      vec3 wi_local = worldToLocal(wi, info.dpdu, info.hitNormal, info.dpdv);
+      vec3 wi_local = worldToLocal(-ray.direction, info.dpdu, info.hitNormal, info.dpdv);
       vec3 wo_local;
       brdf = sampleBRDF(wi_local, wo_local, hitMaterial, pdf_solid);
       vec3 wo = localToWorld(wo_local, info.dpdu, info.hitNormal, info.dpdv);
@@ -94,7 +96,68 @@ int generateLightSubpath() {
 }
 
 // generate subpath from eye
-void generateEyeSubpath(in vec2 uv) {
+// ij: pixel coordinate (i, j)
+// return: number of vertices of generated subpath
+int generateEyeSubpath(in vec2 ij) {
+  // sample point on film
+    vec2 uv = (2.0*(ij + vec2(random(), random())) - resolution) * resolutionYInv;
+    uv.y = -uv.y;
+
+  // sample point on lens(special case: pinhole camera)
+  eyeSubpath[0].x = camera.camPos;
+  eyeSubpath[0].n = camera.camForward;
+  eyeSubpath[0].alpha = 1;
+
+  // sample direction from eye 
+  float pdf_solid;
+  Ray ray = rayGen(uv, pdf_solid);
+
+  float rr_prob = 1; // russian roulette probability
+  int n_E = 1; // number of vertices of eye subpath
+  vec3 brdf = vec3(1); // BRDF
+
+  // generate path
+  for(int i = 1; i <= MAX_DEPTH; ++i) {
+    // russian roulette
+    if(random() >= rr_prob) {
+      break;
+    }
+
+    IntersectInfo info;
+    if(intersect(ray, info)) {
+      // update number of vertices
+      n_E++;
+
+      // hit surface info
+      Primitive hitPrimitive = primitives[info.primID];
+      Material hitMaterial = materials[hitPrimitive.material_id];
+
+      // set vertex info
+      eyeSubpath[i].x = info.hitPos;
+      eyeSubpath[i].n = info.hitNormal;
+      eyeSubpath[i].material_id = hitPrimitive.material_id
+
+      // compute alpha
+      eyeSubpath[i].alpha = abs(dot(eyeSubpath[i - 1].n, ray.direction)) / (rr_prob * pdf_solid) * brdf * eyeSubpath[i - 1].alpha;
+
+      // BRDF sampling
+      vec3 wo_local = worldToLocal(-ray.direction, info.dpdu, info.hitNormal, info.dpdv);
+      vec3 wi_local;
+      brdf = sampleBRDF(wo_local, wi_local, hitMaterial, pdf_solid);
+      vec3 wi = localToWorld(wi_local, info.dpdu, info.hitNormal, info.dpdv);
+
+      // update russian roulette probability
+      rr_prob *= 0.99;
+
+      // set next ray
+      ray = Ray(info.hitPos, wi);
+    }
+    else {
+      break;
+    }
+  }
+
+  return n_E;
 }
 
 vec3 computeRadiance(in Ray ray_in) {

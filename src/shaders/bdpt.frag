@@ -106,7 +106,7 @@ int generateEyeSubpath(in vec2 ij) {
   // sample point on lens(special case: pinhole camera)
   eyeSubpath[0].x = camera.camPos;
   eyeSubpath[0].n = camera.camForward;
-  eyeSubpath[0].alpha = 1;
+  eyeSubpath[0].alpha = vec3(1);
 
   // sample direction from eye 
   float pdf_solid;
@@ -135,7 +135,7 @@ int generateEyeSubpath(in vec2 ij) {
       // set vertex info
       eyeSubpath[i].x = info.hitPos;
       eyeSubpath[i].n = info.hitNormal;
-      eyeSubpath[i].material_id = hitPrimitive.material_id
+      eyeSubpath[i].material_id = hitPrimitive.material_id;
 
       // compute alpha
       eyeSubpath[i].alpha = abs(dot(eyeSubpath[i - 1].n, ray.direction)) / (rr_prob * pdf_solid) * brdf * eyeSubpath[i - 1].alpha;
